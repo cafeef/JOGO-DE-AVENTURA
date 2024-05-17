@@ -58,6 +58,7 @@ def EscolhaPersonagem():
         habilidades = [Hab1, Hab2, Hab3, Hab4, Hab5, xp]
         MaPerso = [[atributos], [itens], [dano_itens], [habilidades]]
         return MaPerso
+    
     if r == 2:
         Classe = r
         print('Você escolheu guerreiro. Você possui: ')
@@ -74,9 +75,9 @@ def EscolhaPersonagem():
 
     if r == 3:
         Classe = r
-        print('Você escolheu guerreiro. Você possui: ')
+        print('Você escolheu mago. Você possui: ')
         vida, Forc, Inte, Agl, armadura, d_item1, Ca = 10, 2, 4, 2, 2, 3, 7
-        item1 = 'espada'
+        item1 = 'cajado'
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: CAJADO')
         atributos = [Classe, vida, Forc, Inte, Agl, Ca]
