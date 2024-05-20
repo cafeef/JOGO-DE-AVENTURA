@@ -84,7 +84,7 @@ def EscolhaPersonagem():
         itens = [item1, item2, item3, item4, item5, armadura]
         dano_itens = [d_item1, d_item2, d_item3, d_item4, d_item5, None]
         habilidades = [Hab1, Hab2, Hab3, Hab4, Hab5, xp]
-        MaPerso = [[atributos], [itens], [dano_itens], [habilidades]]
+        MaPerso = [atributos, itens, dano_itens, habilidades]
         return MaPerso
     
 
@@ -95,5 +95,9 @@ from random import randint
 r = inicio()
 if r == 1:
     MaPerso = EscolhaPersonagem()
+    print(MaPerso[0])
+    print(MaPerso[1])
+    print(MaPerso[2])
+    print(MaPerso[3])
 if r == 2:
     print('Que pena! Espero que volte logo!')
