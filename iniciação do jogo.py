@@ -103,7 +103,7 @@ def MenuDeAcoes(config):
         if m == 4: 
             print('Movendo-se para atrás...')
     if r == 2:
-        Ataque()
+        menuDeAcoes(config,inimigo)
         #funcao do atos de atacar
     if r == 3: 
         if config[3][1] == 'chave baú':
