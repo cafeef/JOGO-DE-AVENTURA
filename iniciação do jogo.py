@@ -39,10 +39,10 @@ def ApresentacaoPersonagem():
             if c == 3:
                 return 3
 def EscolhaPersonagem():
-    Classe, Forc, Inte, Agl = 0, 0, 0, 0
-    ataque1, ataque2, ataque3, ataque4, ataque5, armadura = 0, 0, 0, 0, 0, 0
-    d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca = 0, 0, 0, 0, 0, 0
-    item1, item2, item3, item4, item5, xp = 0, 0, 0, 0, 0, 20
+    Classe, Forc, Inte, Agl = None, None, None, None
+    ataque1, ataque2, ataque3, ataque4, ataque5, armadura = None, None, None, None, None, None
+    d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca = None, None, None, None, None, None
+    item1, item2, item3, item4, item5, xp = None, None, None, None, None, 20
     r = ApresentacaoPersonagem()
     if r == 1:
         Classe = 'Barbaro'
