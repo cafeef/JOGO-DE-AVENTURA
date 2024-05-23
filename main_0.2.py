@@ -224,24 +224,15 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                     case 8:
                         visualizacaoS+= f'{Fore.LIGHTRED_EX}_  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.LIGHTRED_EX}X  {Style.RESET_ALL}'
-                    case 10:
-                        visualizacaoS+= f' {Fore.RED}O {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
-                    case 11:
-                        visualizacaoS+= f'{Fore.RED}## {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}|| {Style.RESET_ALL}'
-                    case 12:
-                        visualizacaoS+= f' {Fore.RED}@ {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
-                    case 13:
-                        visualizacaoS+= f'{Fore.RED}XX {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}|| {Style.RESET_ALL}'
                     case 19:
                         visualizacaoS+= f'{Fore.WHITE}^  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.WHITE}|  {Style.RESET_ALL}'
                     case 20:
                         visualizacaoS+= '   '
                         visualizacaoI+= '   '
+                    case _:
+                        visualizacaoS+= f' {Fore.RED}O {Style.RESET_ALL}'
+                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
             else:
                 visualizacaoS+= '   '
                 visualizacaoI+= '   '
