@@ -477,9 +477,6 @@ def combate(config, inimigo, turno):
             print(f" O {inimigo[0]} foi derrotado. Parabens !")
             print(f" Você receber {inimigo[7]} de xp, e agora seu xp é {config[3][5]}")
             config[3][5] += inimigo[7]  
-            '''
-            LEANDRO, TIRA O INIMIGO DO MAPA AQUI !!!!!!!!!!!!!!!!!!!!
-            '''
             mapa_gerado[evento[1]][evento[2]][0]= 0
 
         #SE NÃO, ROLE O TURNO
