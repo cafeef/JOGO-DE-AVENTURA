@@ -1,3 +1,4 @@
+'''
 def inicio():
     r = 0
     print('------------------\n SEJA BEM VINDO!  \nESCOLHA UMA OPÇÃO:\n------------------ ')
@@ -143,3 +144,4 @@ if r == 1:
         MenuDeAcoes(config)
 if r == 2:
     print('Que pena! Espero que volte logo!')
+'''
