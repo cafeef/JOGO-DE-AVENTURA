@@ -274,7 +274,7 @@ def movimento(config):
         print(evento)
         if 10 <= evento <= 13:
             combate(config, criarFichaMonstro(evento), "j")
-
+        MenuDeAcoes(config)
 def iniciandoMapa(n):
     tamanho= n
     global mapa_gerado
@@ -334,6 +334,7 @@ def iniciandoMapa(n):
                 mapa_gerado[yPosition][xPosition+1][0]= 0
             elif mapa_gerado[yPosition][xPosition+1][0] == 1:
                 mapa_gerado[yPosition][xPosition-1][0]= 0
+    
 
 #MAPA : (LEANDO)
 #MENU INICIAL : (FERNANDA)
@@ -396,7 +397,6 @@ def EscolhaPersonagem():
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
         itens = [item1, item2, item3, item4, item5, xp]
         MaPerso = [atributos, ataques, dano_ataques, itens]
-        print(MaPerso)
         return MaPerso
     
     if r == 2:
@@ -427,17 +427,14 @@ def EscolhaPersonagem():
         MaPerso = [atributos, ataques, dano_ataques, itens]
         return MaPerso
     
-def MenuDeAcoes(config, inimigo):
+def MenuDeAcoes(config):
     #Montar o menu de ações (que vai ser exibido sempre)
     #mover, atacar, fugir, abrir, descansar e listar inventário.
-    print('Escolha o que deseja fazer: [1] MOVER | [2] ATACAR | [3] ABRIR | [4] DESCANSAR | [5] INVENTÁRIO')
+    print('Escolha o que deseja fazer: [1] MOVER | [2] ABRIR | [3] DESCANSAR | [4] INVENTÁRIO')
     r = int(input(' '))
     if r == 1:
         movimento(config)
-    if r == 2:
-        menuCombate(config,inimigo)
-        #funcao do atos de atacar
-    if r == 3: 
+    if r == 2: 
         i = 0
         fim = len(config[3])
         c = ''
@@ -449,7 +446,7 @@ def MenuDeAcoes(config, inimigo):
                 i += 1
             fim -= 1
         print('Você não tem a chave para acessar o baú.')
-    if r == 4:
+    if r == 3:
         i = 0
         fim = len(config[3])
         p = ''
@@ -465,13 +462,13 @@ def MenuDeAcoes(config, inimigo):
             fim -= 1
         print('Você não tem a porção necessária para descansar.')
         
-    if r == 5: 
+    if r == 4: 
         print(f"|Vida : {config[0][1]}/{config[0][2]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
         print("E olhando na mochila se percebe que... ")
         print("Você possui: ")
         i = 0
         while i < 5:
-            if config[1][i] != 0:
+            if config[1][i] != None:
                 print(f"° um(a) {config[1][i]}. Dano - > {config[2][i]}")
                 i+=1
             else:
@@ -727,14 +724,10 @@ def verInventario(config):
 
 r = inicio()
 if r == 1:
-    config = EscolhaPersonagem()   
-    print(config[0])
-    print(config[1])
-    print(config[2])
-    print(config[3])
+    config = EscolhaPersonagem()
     iniciandoMapa(14)
     while True: 
-        MenuDeAcoes(config, None)
+        MenuDeAcoes(config)
 if r == 2:
     print('Que pena! Espero que volte logo!')
 

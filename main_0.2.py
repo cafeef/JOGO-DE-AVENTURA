@@ -274,6 +274,7 @@ def movimento(config):
         print(evento)
         if 10 <= evento <= 13:
             combate(config, criarFichaMonstro(evento), "j")
+        MenuDeAcoes(config)
 #a
 def iniciandoMapa(n):
     tamanho= n
@@ -396,7 +397,6 @@ def EscolhaPersonagem():
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
         itens = [item1, item2, item3, item4, item5, xp]
         MaPerso = [atributos, ataques, dano_ataques, itens]
-        print(MaPerso)
         return MaPerso
     
     if r == 2:
@@ -427,42 +427,48 @@ def EscolhaPersonagem():
         MaPerso = [atributos, ataques, dano_ataques, itens]
         return MaPerso
     
-def MenuDeAcoes(config,inimigo):
+def MenuDeAcoes(config):
     #Montar o menu de ações (que vai ser exibido sempre)
     #mover, atacar, fugir, abrir, descansar e listar inventário.
-    print('Escolha o que deseja fazer: [1] MOVER | [2] ATACAR | [3] ABRIR | [4] DESCANSAR | [5] INVENTÁRIO')
+    print('Escolha o que deseja fazer: [1] MOVER | [2] ABRIR | [3] DESCANSAR | [4] INVENTÁRIO')
     r = int(input(' '))
     if r == 1:
-        print('[1] ESQUERDA | [2] DIREITA | [3] FRENTE | [4] ATRÁS')
-        m = int(input(' '))
-        if m == 1: 
-            print('Movendo-se para a esquerda...')
-        if m == 2: 
-            print('Movendo-se para a direita...')
-        if m == 3: 
-            print('Movendo-se para a frente...')
-        if m == 4: 
-            print('Movendo-se para atrás...')
-    if r == 2:
-        menuCombate(config,inimigo)
-        #funcao do atos de atacar
-    if r == 3: 
-        if config[3][1] == 'chave baú':
-            print('Vocë abriu o baú!')
-        else: 
-            print('Você não tem a chave para acessar o baú.')
-    if r == 4:
-        print('Você escolheu descansar.')
-        dif = config[0][1] - config[0][2]
-        config[0][2] = config[0][2] + dif
-        print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
-    if r == 5: 
+        movimento(config)
+    if r == 2: 
+        i = 0
+        fim = len(config[3])
+        c = ''
+        while fim >= 0:
+            while i <= (fim - 1):
+                c = config[3][i]
+                if c == 'chave':
+                    print('Você abriu o baú!')
+                i += 1
+            fim -= 1
+        print('Você não tem a chave para acessar o baú.')
+    if r == 3:
+        i = 0
+        fim = len(config[3])
+        p = ''
+        while fim >= 0:
+            while i <= (fim - 1):
+                p = config[3][i]
+                if p == 'porcao':
+                    print('Você escolheu descansar.')
+                    dif = config[0][1] - config[0][2]
+                    config[0][2] = config[0][2] + dif
+                    print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
+                i += 1
+            fim -= 1
+        print('Você não tem a porção necessária para descansar.')
+        
+    if r == 4: 
         print(f"|Vida : {config[0][1]}/{config[0][2]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
         print("E olhando na mochila se percebe que... ")
         print("Você possui: ")
         i = 0
         while i < 5:
-            if config[1][i] != 0:
+            if config[1][i] != None:
                 print(f"° um(a) {config[1][i]}. Dano - > {config[2][i]}")
                 i+=1
             else:
@@ -717,14 +723,11 @@ def verInventario(config):
 
 
 r = inicio()
-if r == 1:
-    config = EscolhaPersonagem()   
-    print(config[0])
-    print(config[1])
-    print(config[2])
-    print(config[3])
+if r == 1:  
+    config = EscolhaPersonagem()
     iniciandoMapa(14)
-    movimento(config)
+    while True: 
+        MenuDeAcoes(config)
 if r == 2:
     print('Que pena! Espero que volte logo!')
 
