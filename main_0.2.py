@@ -166,18 +166,18 @@ def verificandoEspaço(direction):
         zone_move= mapa_gerado[yPosition+ int(direction/2)][xPosition][0]
         if (zone_move == 0) or (zone_move == 3):
             yPosition += int(direction/2)
-            return 0
+            return [zone_move, yPosition, xPosition]
         else:
             mapa_gerado[yPosition+ int(direction/2)][xPosition][1]= True
-            return zone_move
+            return [zone_move, yPosition+ int(direction/2), xPosition]
     else:
         zone_move= mapa_gerado[yPosition][xPosition+ direction][0]
         if (zone_move == 0) or (zone_move == 3):
             xPosition += direction
-            return 0
+            return [zone_move, yPosition, xPosition]
         else:
             mapa_gerado[yPosition][xPosition+ direction][1]= True
-            return zone_move
+            return [zone_move, yPosition, xPosition+direction]
 #Oferecendo uma versão legível do mapa
 def transformadorUI(mapa : list, ypos: int, xpos: int):
     count1=0
@@ -224,24 +224,16 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                     case 8:
                         visualizacaoS+= f'{Fore.LIGHTRED_EX}_  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.LIGHTRED_EX}X  {Style.RESET_ALL}'
-                    case 10:
-                        visualizacaoS+= f' {Fore.RED}O {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
-                    case 11:
-                        visualizacaoS+= f'{Fore.RED}## {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}|| {Style.RESET_ALL}'
-                    case 12:
-                        visualizacaoS+= f' {Fore.RED}@ {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
-                    case 13:
-                        visualizacaoS+= f'{Fore.RED}XX {Style.RESET_ALL}'
-                        visualizacaoI+= f'{Fore.RED}|| {Style.RESET_ALL}'
                     case 19:
                         visualizacaoS+= f'{Fore.WHITE}^  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.WHITE}|  {Style.RESET_ALL}'
                     case 20:
                         visualizacaoS+= '   '
                         visualizacaoI+= '   '
+                    case 10 | 11 | 12 | 13:
+                        visualizacaoS+= f' {Fore.RED}O {Style.RESET_ALL}'
+                        visualizacaoI+= f'{Fore.RED}| |{Style.RESET_ALL}'
+
             else:
                 visualizacaoS+= '   '
                 visualizacaoI+= '   '
@@ -256,6 +248,7 @@ def movimento(config):
         checkWater(xPosition, yPosition)
         comando= str(input('Escolha uma direção para ir: '))
         comando= comando.lower()
+        global evento
         if comando == 'w':
             evento= verificandoEspaço(-2)
         elif comando == 's':
@@ -272,10 +265,9 @@ def movimento(config):
         print(xPosition)
         print(yPosition)
         print(evento)
-        if 10 <= evento <= 13:
-            combate(config, criarFichaMonstro(evento), "j")
+        if 10 <= evento[0] <= 13:
+            combate(config, criarFichaMonstro(evento[0]), "j")
         MenuDeAcoes(config)
-#a
 def iniciandoMapa(n):
     tamanho= n
     global mapa_gerado
@@ -336,7 +328,7 @@ def iniciandoMapa(n):
             elif mapa_gerado[yPosition][xPosition+1][0] == 1:
                 mapa_gerado[yPosition][xPosition-1][0]= 0
 
-#MAPA : (LEANDO)
+#MAPA : (LEANDRO)
 #MENU INICIAL : (FERNANDA)
 def inicio():
     r = 0
@@ -488,6 +480,7 @@ def combate(config, inimigo, turno):
             '''
             LEANDRO, TIRA O INIMIGO DO MAPA AQUI !!!!!!!!!!!!!!!!!!!!
             '''
+            mapa_gerado[evento[1]][evento[2]][0]= 0
 
         #SE NÃO, ROLE O TURNO
         else:
@@ -730,8 +723,3 @@ if r == 1:
         MenuDeAcoes(config)
 if r == 2:
     print('Que pena! Espero que volte logo!')
-
-
-'''
-Movimentação é liberada
-'''
