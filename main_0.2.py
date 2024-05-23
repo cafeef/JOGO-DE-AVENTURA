@@ -274,7 +274,7 @@ def movimento(config):
         print(evento)
         if 10 <= evento <= 13:
             combate(config, criarFichaMonstro(evento), "j")
-
+#a
 def iniciandoMapa(n):
     tamanho= n
     global mapa_gerado
