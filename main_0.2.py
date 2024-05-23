@@ -250,19 +250,19 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         print(visualizacaoS)
         print(visualizacaoI)
 
-def movimento():
+def movimento(config):
     while True:
         mapa_gerado[yPosition][xPosition][1]= True
         checkWater(xPosition, yPosition)
         comando= str(input('Escolha uma direção para ir: '))
         comando= comando.lower()
-        if comando == 'n':
+        if comando == 'w':
             evento= verificandoEspaço(-2)
         elif comando == 's':
             evento= verificandoEspaço(2)
-        elif comando == 'l':
+        elif comando == 'd':
             evento= verificandoEspaço(1)
-        elif comando == 'o':
+        elif comando == 'a':
             evento= verificandoEspaço(-1)
         else:
             print('Direção inválida')
@@ -272,6 +272,8 @@ def movimento():
         print(xPosition)
         print(yPosition)
         print(evento)
+        if 10 <= evento <= 13:
+            combate(config, criarFichaMonstro(evento), "j")
 
 def iniciandoMapa(n):
     tamanho= n
@@ -311,6 +313,7 @@ def iniciandoMapa(n):
     mapa_gerado[0][saida][0]= 20
     mapa_gerado[1][saida][0]= 19
     #Colocando jogador no inicio do mapa
+    global yPosition
     yPosition= len(mapa_gerado)- 2
     starting_spawn= randint(1,tamanho-1)
     i= 0
@@ -320,6 +323,7 @@ def iniciandoMapa(n):
         if i >1000:
             i= 0
             break
+    global xPosition
     xPosition= starting_spawn
     #Verificando se o jogador não está preso
     if mapa_gerado[yPosition][xPosition][0] != 0:
@@ -384,7 +388,7 @@ def EscolhaPersonagem():
         Classe = 'Barbaro'
         print('Você escolheu bárbaro. Você possui: ')
         vidaMax, vidaAtual, Forc, Inte, Agl, d_ataque1, Ca = 18, 18, 5, 1, 4, 5, 9
-        item1, armadura = 'Machado', 'Gibão de Pele'
+        ataque1, armadura  = 'Machado', 'Gibão de Pele' 
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: MACHADO')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
@@ -392,13 +396,14 @@ def EscolhaPersonagem():
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
         itens = [item1, item2, item3, item4, item5, xp]
         MaPerso = [atributos, ataques, dano_ataques, itens]
+        print(MaPerso)
         return MaPerso
     
     if r == 2:
         Classe = 'Guerreiro'
         print('Você escolheu guerreiro. Você possui: ')
         vidaMax, vidaAtual, Forc, Inte, Agl, d_ataque1, Ca = 18, 18, 4, 3, 3, 4, 10
-        item1, armadura = 'Espada', 'Cota de Malha'
+        ataque1, armadura = 'Espada', 'Cota de Malha'
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: ESPADA')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
@@ -412,7 +417,7 @@ def EscolhaPersonagem():
         Classe = 'Mago'
         print('Você escolheu mago. Você possui: ')
         vidaMax, vidaAtual, Forc, Inte, Agl, d_ataque1, Ca= 15, 15, 2, 4, 2, 2, 8
-        item1, armadura = 'Cajado', 'Manto do Mago'
+        ataque1, armadura = 'Cajado', 'Manto do Mago'
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: CAJADO')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
@@ -473,12 +478,10 @@ def combate(config, inimigo, turno):
         if inimigo[1] <= 0:
             print(f" O {inimigo[0]} foi derrotado. Parabens !")
             print(f" Você receber {inimigo[7]} de xp, e agora seu xp é {config[3][5]}")
-            config[3][5] += inimigo[7]
-
-            #EXISTE ALGUM ITEM A SER PEGO?
-            #print("Vasculhando em busca de itens...")
-            #sleep(2.3)
-            #vasculharRestos(config, inimigo)         
+            config[3][5] += inimigo[7]  
+            '''
+            LEANDRO, TIRA O INIMIGO DO MAPA AQUI !!!!!!!!!!!!!!!!!!!!
+            '''
 
         #SE NÃO, ROLE O TURNO
         else:
@@ -543,9 +546,9 @@ def menuCombate(config,inimigo):
             combate(config,inimigo,"i")
 
 #GERADORES
-def gerarInimigo(inimigo):
+def criarFichaMonstro(inimigo):
     inimigoConfig = []
-    if inimigo == 1:
+    if inimigo == 10:
         inimigoConfig.append("Javali")
         inimigoConfig.append(12)
         inimigoConfig.append(5)
@@ -554,8 +557,7 @@ def gerarInimigo(inimigo):
         inimigoConfig.append(5)
         inimigoConfig.append(1)
         inimigoConfig.append(10)
-
-    elif inimigo == 2:
+    elif inimigo == 11:
         inimigoConfig.append("Esquilo Com AIDS")
         inimigoConfig.append(2)
         inimigoConfig.append(6)
@@ -564,7 +566,7 @@ def gerarInimigo(inimigo):
         inimigoConfig.append(1)
         inimigoConfig.append(4)
         inimigoConfig.append(10)
-    elif inimigo == 3:
+    elif inimigo == 12:
         inimigoConfig.append("Guaxinim")
         inimigoConfig.append(12)
         inimigoConfig.append(10)
@@ -573,7 +575,7 @@ def gerarInimigo(inimigo):
         inimigoConfig.append(6)
         inimigoConfig.append(2)
         inimigoConfig.append(10)
-    elif inimigo == 4:
+    elif inimigo == 13:
         inimigoConfig.append("Lobo Pidão")
         inimigoConfig.append(16)
         inimigoConfig.append(7)
@@ -721,8 +723,8 @@ if r == 1:
     print(config[1])
     print(config[2])
     print(config[3])
-    while True: 
-        MenuDeAcoes(config,None)
+    iniciandoMapa(14)
+    movimento(config)
 if r == 2:
     print('Que pena! Espero que volte logo!')
 
@@ -730,6 +732,3 @@ if r == 2:
 '''
 Movimentação é liberada
 '''
-iniciandoMapa(14)
-
-movimento()
