@@ -445,14 +445,14 @@ def MenuDeAcoes(config):
         while fim >= 0:
             while i <= (fim - 1):
                 p = config[3][i]
-                if p == 'porcao':
+                if p == 'pocao':
                     print('Você escolheu descansar.')
                     dif = config[0][1] - config[0][2]
                     config[0][2] = config[0][2] + dif
                     print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
                 i += 1
             fim -= 1
-        print('Você não tem a porção necessária para descansar.')
+        print('Você não tem a poção necessária para descansar.')
         
     if r == 4: 
         print(f"|Vida : {config[0][1]}/{config[0][2]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
