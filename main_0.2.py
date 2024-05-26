@@ -164,7 +164,7 @@ def verificandoEspaço(direction):
     global yPosition
     if direction % 2==0:
         zone_move= mapa_gerado[yPosition+ int(direction/2)][xPosition][0]
-        if (zone_move == 0) or (zone_move == 3):
+        if (zone_move == 0) or (zone_move == 3) or (zone_move == 19):
             yPosition += int(direction/2)
             return [zone_move, yPosition, xPosition]
         else:
@@ -172,7 +172,7 @@ def verificandoEspaço(direction):
             return [zone_move, yPosition+ int(direction/2), xPosition]
     else:
         zone_move= mapa_gerado[yPosition][xPosition+ direction][0]
-        if (zone_move == 0) or (zone_move == 3):
+        if (zone_move == 0) or (zone_move == 3) or (zone_move == 19):
             xPosition += direction
             return [zone_move, yPosition, xPosition]
         else:
@@ -267,6 +267,9 @@ def movimento(config):
         print(evento)
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
+        if evento[0] == 20:
+            print('\nVocê segue o caminho e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
+            iniciandoMapa(tamanho_inicial_mapa)
         MenuDeAcoes(config)
 def iniciandoMapa(n):
     tamanho= n
@@ -423,7 +426,13 @@ def MenuDeAcoes(config):
     #Montar o menu de ações (que vai ser exibido sempre)
     #mover, atacar, fugir, abrir, descansar e listar inventário.
     print('Escolha o que deseja fazer: [1] MOVER | [2] ABRIR | [3] DESCANSAR | [4] INVENTÁRIO')
-    r = int(input(' '))
+    #Permite que o jogador continue a jogar caso ele digite uma letra e ocorra ValueError
+    while True:
+        try:
+            r = int(input(' '))
+            break
+        except ValueError:
+            pass
     if r == 1:
         movimento(config)
     if r == 2: 
@@ -711,11 +720,11 @@ def verInventario(config):
 ##################
 #Início do programa principal
 
-
+tamanho_inicial_mapa= 14
 r = inicio()
 if r == 1:  
     config = EscolhaPersonagem()
-    iniciandoMapa(14)
+    iniciandoMapa(tamanho_inicial_mapa)
     while True: 
         MenuDeAcoes(config)
 if r == 2:
