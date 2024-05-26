@@ -267,6 +267,7 @@ def movimento(config):
         print(evento)
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
+
         if evento[0] == 20:
             print('\nVocê segue o caminho e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
             iniciandoMapa(tamanho_inicial_mapa)
@@ -511,10 +512,11 @@ def combate(config, inimigo, turno):
 #MENU JOGADOR
 def menuCombate(config,inimigo):
     print("------------------------É seu turno! O que deseja fazer ?------------------------")
-    print("| :ATACAR     |\n| :INVENTARIO |\n| :FUGIR      |")
+    print("| :ATACAR     |\n| :INVENTARIO |\n| :ITEM    |\n| :FUGIR      |")
     n = ''
     while n != "ATACAR" and n != "INVENTARIO" and n != "FUGIR":
         n = input("| Digite sua escolha:  ")
+        n= n.upper()
 
     #ATACANDO
     if n == "ATACAR":
@@ -527,15 +529,40 @@ def menuCombate(config,inimigo):
                 i+=1
         
         j = -1
-        while not(0 <= j <= 5):
-            j = int(input("Escolha um item a ser usado:  "))
-            ataqueJogador(config, j , inimigo)
+        while (0 > j) or (j > 5):
+            try:
+                j = int(input("Escolha um item a ser usado:  "))
+            except ValueError:
+                pass
+        ataqueJogador(config, j , inimigo)
 
     elif n == "INVENTARIO":
         #MOSTRANDO O INVENTARIO
         verInventario(config)
         #CHAMANDO NOVAMENTE O MENU DE AÇÕES
         menuCombate(config,inimigo)
+    elif n == "ITEM":
+        conta= 0
+        #Procurando por todos os items do jogador (tirando o xp q ta no final)
+        tem_items= False
+        for item in config[3][:5]:
+            if item != None:
+                print(f'{conta} -> {item}')
+                conta+= 1
+                tem_items= True
+            else:
+                conta+= 1
+        j= -1
+        while (0 > j) or (j > 5):
+            if tem_items == False:
+                print('Você não tem items para usar no momento!')
+                break
+            try:
+                j= int(input('Digite um item para ser usado: '))
+            except ValueError:
+                pass
+            
+            
     else:
         print("Tentando fugir...")
         sleep(0.7)
