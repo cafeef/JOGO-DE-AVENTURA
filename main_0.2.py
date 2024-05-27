@@ -4,7 +4,6 @@ from colorama import Fore
 from colorama import Style
 from time import sleep
 
-
 '''
 Legenda Numeros (pode ser trocada):
 0- Espaço vazio
@@ -192,13 +191,13 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         visualizacaoI= ''
         count2= 0
         for colunas in lines:
-            if True:
                 #Verificando posição do jogador e colocando P de jogador na visualização
-                if (count1== ypos) and (count2== xpos):
-                    count2+=1
-                    visualizacaoS+= '   '
-                    visualizacaoI+= 'P  '
-                    continue
+            if (count1== ypos) and (count2== xpos):
+                count2+=1
+                visualizacaoS+= '   '
+                visualizacaoI+= 'P  '
+                continue
+            if True:
                 #Comparando colunas[0] com cada case e adicionando na linha de visualização o símbolo correspondente
                 #Biblioteca colorama permite adicionar cor ao texto
                 match colunas[0]:
