@@ -267,9 +267,11 @@ def movimento(config):
         print(evento)
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
+        if evento[0] == 6:
 
+            print(f'Você ganhou um ')
         if evento[0] == 20:
-            print('\nVocê segue o caminho e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
+            print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
             iniciandoMapa(tamanho_inicial_mapa)
         MenuDeAcoes(config)
 def iniciandoMapa(n):
@@ -425,8 +427,12 @@ def EscolhaPersonagem():
     
 def MenuDeAcoes(config):
     #Montar o menu de ações (que vai ser exibido sempre)
-    #mover, atacar, fugir, abrir, descansar e listar inventário.
-    print('Escolha o que deseja fazer: [1] MOVER | [2] ABRIR | [3] DESCANSAR | [4] INVENTÁRIO')
+    #mover, atacar, fugir, abrir, descansar e listar inventário. #
+    '''Eu acho melhor usar a mesma lógica de movimento que eu tinha ali em cima e
+       com base na posição do evento (se o evento for 7) o jogador pode usar a chave na posição do 7
+       e então posso substituir o 7 local pelo 6 para que o jogador possa pegar o item - Leandro
+    ''' #Se mudar de ideia podemos ir no histórico do github e voltar ao que era antes
+    print('Escolha o que deseja fazer: [1] MOVER | [2] USAR ITEM | [3] DESCANSAR | [4] INVENTÁRIO')
     #Permite que o jogador continue a jogar caso ele digite uma letra e ocorra ValueError
     while True:
         try:
@@ -436,18 +442,43 @@ def MenuDeAcoes(config):
             pass
     if r == 1:
         movimento(config)
-    if r == 2: 
-        i = 0
-        fim = len(config[3])
-        c = ''
-        while fim >= 0:
-            while i <= (fim - 1):
-                c = config[3][i]
-                if c == 'chave':
-                    print('Você abriu o baú!')
-                i += 1
-            fim -= 1
-        print('Você não tem a chave para acessar o baú.')
+    if r == 2:
+        tem_item= False
+        conta= 0
+        for item in config[3][:5]:
+            if item != None:
+                print(f'{conta} -> {config[3][conta]}')
+                conta+= 1
+                tem_item= True 
+            else:
+                conta+=1
+        if tem_item == False:
+            print('Você não tem nenhum item na mochila!')
+        #Player usará item em uma posição do mapa
+        while tem_item == True:
+            try:
+                comando= int(input('Escolha um item para usar'))
+                item_usar= config[3][comando]
+                if (item_usar == None) or (comando == 5):
+                    continue
+            except ValueError or IndexError:
+                continue
+            comando= str(input('Escolha uma direção para usar o item'))
+            comando= comando.lower()
+            if comando == 'w':
+                evento= verificandoEspaço(-2)
+            elif comando == 's':
+                evento= verificandoEspaço(2)
+            elif comando == 'd':
+                evento= verificandoEspaço(1)
+            elif comando == 'a':
+                evento= verificandoEspaço(-1)
+            else:
+                print('Direção inválida')
+                continue
+            break
+         
+
     if r == 3:
         i = 0
         fim = len(config[3])
@@ -747,6 +778,10 @@ def verInventario(config):
 ##################
 #Início do programa principal
 
+#Algums items que eu vou adicionar
+vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
+              'Bomba de fumaça', 'Bagulho que paraliza o inimigo sla', 'Bomba', 'Amuleto da sorte' #Items de combate (não são ataques)
+              ]
 tamanho_inicial_mapa= 14
 r = inicio()
 if r == 1:  
