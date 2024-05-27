@@ -273,8 +273,14 @@ def movimento(config):
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
         if evento[0] == 6:
-
-            print(f'Você ganhou um ')
+            mapa_gerado[evento[1]][evento[2]][0]= 0
+            i= 0
+            for item in config[3]:
+                if item == None:
+                    config[3][i]= vetor_items[randint(1,7)]
+                    break
+                i+= 1
+            print(f'Você ganhou um(a) {config[3][i]}')
         if evento[0] == 20:
             print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
             iniciandoMapa(tamanho_inicial_mapa)
@@ -386,7 +392,7 @@ def EscolhaPersonagem():
     Classe, Forc, Inte, Agl = None, None, None, None
     ataque1, ataque2, ataque3, ataque4, ataque5, armadura = None, None, None, None, None, None
     d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca = None, None, None, None, None, None
-    item1, item2, item3, item4, item5, xp = None, None, None, None, None, 20
+    item1, item2, item3, item4, item5, xp = 'Chave', None, None, None, None, 20
     r = ApresentacaoPersonagem()
     if r == 1:
         Classe = 'Barbaro'
@@ -462,13 +468,14 @@ def MenuDeAcoes(config):
         #Player usará item em uma posição do mapa
         while tem_item == True:
             try:
-                comando= int(input('Escolha um item para usar'))
+                comando= int(input('Escolha um item para usar: '))
                 item_usar= config[3][comando]
+                guard= comando
                 if (item_usar == None) or (comando == 5):
                     continue
             except ValueError or IndexError:
                 continue
-            comando= str(input('Escolha uma direção para usar o item'))
+            comando= str(input('Escolha uma direção para usar o item: '))
             comando= comando.lower()
             if comando == 'w':
                 evento= verificandoEspaço(-2)
@@ -482,9 +489,10 @@ def MenuDeAcoes(config):
                 print('Direção inválida')
                 continue
             itemsMapa(item_usar, evento[1:], comando)
+            sleep(2)
             transformadorUI(mapa_gerado, yPosition, xPosition)
             print(f'Você usou {item_usar}')
-            item_usar= None
+            config[3][guard]= None
             break
          
 
@@ -505,17 +513,7 @@ def MenuDeAcoes(config):
         print('Você não tem a poção necessária para descansar.')
         
     if r == 4: 
-        print(f"|Vida : {config[0][1]}/{config[0][2]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
-        print("E olhando na mochila se percebe que... ")
-        print("Você possui: ")
-        i = 0
-        while i < 5:
-            if config[1][i] != None:
-                print(f"° um(a) {config[1][i]}. Dano - > {config[2][i]}")
-                i+=1
-            else:
-                i+=1
-        print(f"Verificando a armadura que carrega você vê um(a) {config[1][5]}, que te faz ter {config[2][5]} de CA")
+        verInventario(config)
 #MENU INICIAL : (FERNANDA)
 #COMBATE : (ATOS)
 #TURNOS
@@ -560,9 +558,9 @@ def combate(config, inimigo, turno):
 #MENU JOGADOR
 def menuCombate(config,inimigo):
     print("------------------------É seu turno! O que deseja fazer ?------------------------")
-    print("| :ATACAR     |\n| :INVENTARIO |\n| :ITEM    |\n| :FUGIR      |")
+    print("| :ATACAR     |\n| :INVENTARIO |\n| :ITEM       |\n| :FUGIR      |")
     n = ''
-    while n != "ATACAR" and n != "INVENTARIO" and n != "FUGIR":
+    while n != "ATACAR" and n != "INVENTARIO" and n != "FUGIR" and n != "ITEM":
         n = input("| Digite sua escolha:  ")
         n= n.upper()
 
@@ -582,7 +580,7 @@ def menuCombate(config,inimigo):
                 j = int(input("Escolha um item a ser usado:  "))
             except ValueError:
                 pass
-        ataqueJogador(config, j , inimigo, vetor_efeitos)
+        ataqueJogador(config, j , inimigo)
 
     elif n == "INVENTARIO":
         #MOSTRANDO O INVENTARIO
@@ -600,10 +598,11 @@ def menuCombate(config,inimigo):
                 tem_items= True
             else:
                 conta+= 1
-        j= -1
         if tem_items == False:
             print('Você não tem items para usar no momento!')
             menuCombate(config,inimigo)
+            sleep(1)
+        j= -1
         while (0 > j) or (j > 5):
             try:
                 j= int(input('Digite um item para ser usado: '))
@@ -614,10 +613,11 @@ def menuCombate(config,inimigo):
             break  
         itemsCombate(config[3][j])
         config[3][j]= None
+        menuCombate(config, inimigo)
     else:
         print("Tentando fugir...")
         sleep(0.7)
-        chanceDeEscapar = config[0][5] + randint(1,20) + vetor_efeitos[1]
+        chanceDeEscapar = config[0][5] + randint(1,20) - vetor_efeitos[1]
         if chanceDeEscapar < 10:
             vetor_efeitos[1]= 0
             print("Você correu!!")
@@ -800,6 +800,13 @@ def verInventario(config):
             i+=1
         else:
             i+=1
+    i= 0
+    while i < 4:
+        if config[3][i] != None:
+            print(f"° um(a) {config[3][i]}")
+            i+=1
+        else:
+            i+=1
     print(f"Verificando a armadura que carrega você vê um(a) {config[1][5]}, que te faz ter {config[2][5]} de CA")
 #COMBATE : (ATOS)
 
@@ -808,7 +815,7 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
     match tipo_item:
         case 'Chave':
             if posicaoAnalisada[0] == 7:
-                posicaoAnalisada= 6
+                posicaoAnalisada[0]= 6
                 print('O baú foi aberto')
         case 'Isqueiro':
             if (posicaoAnalisada[0] == 2) or (posicaoAnalisada[0] == 5):
@@ -843,8 +850,6 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
                 for coluna in linha:
                     coluna[1]= True
             print('Seu mapa está completo')
-        case _:
-            print('Você jogou seu item no chão e perdeu ele')
 def itemsCombate(tipo_item):
     global vetor_efeitos
     vetor_efeitos= [0, 0, 0, 0]
@@ -861,8 +866,7 @@ def itemsCombate(tipo_item):
         case 'Escudo':
             vetor_efeitos[3]= 1
             print('O próximo será defendido')
-        case _:
-            print('O inimigo destruiu seu item')
+
 #ITEMS : (LEANDRO)
 
 ##################
@@ -871,6 +875,7 @@ def itemsCombate(tipo_item):
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
               'Bomba de fumaça', 'Bagulho que paraliza o inimigo sla', 'Escudo', 'Amuleto da sorte' #Items de combate (não são ataques)
               ]
+vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
 r = inicio()
 if r == 1:  
