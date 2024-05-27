@@ -818,7 +818,8 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
                 print('O baú foi aberto')
         case 'Isqueiro':
             if (posicaoAnalisada[0] == 2) or (posicaoAnalisada[0] == 5):
-                posicaoAnalisada= 0
+                mapa_gerado[local[0]][local[1]][0]= 0
+                print('Obstáculo virou cinzas')
             elif posicaoAnalisada[0] == 7:
                 choice((1,2))
                 if choice == 1:
@@ -827,7 +828,7 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
                 else:
                     print('O baú virou cinzas')
                     posicaoAnalisada[0]= 6
-            posicaoAnalisada[1]= True
+            mapa_gerado[local[0]][local[1]][1]= True
         case 'Lanterna':
             Lcontador= 0
             while Lcontador < 5:
@@ -864,7 +865,7 @@ def itemsCombate(tipo_item):
             print('Seu inimigo foi paralizado')
         case 'Escudo':
             vetor_efeitos[3]= 1
-            print('O próximo será defendido')
+            print('O próximo ataque será defendido')
 
 #ITEMS : (LEANDRO)
 
