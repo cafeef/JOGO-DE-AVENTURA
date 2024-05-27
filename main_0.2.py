@@ -35,7 +35,12 @@ def geradorInimigo(spawn_zone, dificuldade= 1):
         geradorInimigo(spawn_zone, dificuldade)
     else:
         try:
-            spawn_zone[randomy][randomx][0]= randint(9, 12)+ dificuldade
+            if dificuldade == 1:
+                spawn_zone[randomy][randomx][0]= randint(10, 11)
+            elif dificuldade == 2:
+                spawn_zone[randomy][randomx][0]= 12
+            else:
+                spawn_zone[randomy][randomx][0]= 13
         except IndexError:
             geradorInimigo(spawn_zone, dificuldade)
 #Gera uma armadilha no mapa
@@ -476,6 +481,10 @@ def MenuDeAcoes(config):
             else:
                 print('Direção inválida')
                 continue
+            itemsMapa(item_usar, evento[1:], comando)
+            transformadorUI(mapa_gerado, yPosition, xPosition)
+            print(f'Você usou {item_usar}')
+            item_usar= None
             break
          
 
@@ -519,6 +528,10 @@ def combate(config, inimigo, turno):
             print(f" Você receber {inimigo[7]} de xp, e agora seu xp é {config[3][5]}")
             config[3][5] += inimigo[7]  
             mapa_gerado[evento[1]][evento[2]][0]= 0
+            vetor_efeitos[0]= 0
+            vetor_efeitos[1]= 0
+            vetor_efeitos[2]= 0 
+            vetor_efeitos[3]= 0
 
         #SE NÃO, ROLE O TURNO
         else:
@@ -527,10 +540,14 @@ def combate(config, inimigo, turno):
                 menuCombate(config,inimigo)
 
             elif turno == 'i':
-                if inimigo[1] >= 0:
+                if (inimigo[1] >= 0) and (vetor_efeitos[2] == 0):
                     print(f"O turno é do {inimigo[0]}")
                     ataqueInimigo(inimigo,config)
 
+                elif vetor_efeitos[2] == 1:
+                    print(f'O inimigo {inimigo[0]} está paralizado nesse turno')
+                    vetor_efeitos[2]= 0
+                    return config
                 #SE O JOGADOR TIVER VIDA, PASSE O COMBATE DE VOLTA PARA ELE
                 else: 
                     return config
@@ -565,7 +582,7 @@ def menuCombate(config,inimigo):
                 j = int(input("Escolha um item a ser usado:  "))
             except ValueError:
                 pass
-        ataqueJogador(config, j , inimigo)
+        ataqueJogador(config, j , inimigo, vetor_efeitos)
 
     elif n == "INVENTARIO":
         #MOSTRANDO O INVENTARIO
@@ -584,21 +601,25 @@ def menuCombate(config,inimigo):
             else:
                 conta+= 1
         j= -1
+        if tem_items == False:
+            print('Você não tem items para usar no momento!')
+            menuCombate(config,inimigo)
         while (0 > j) or (j > 5):
-            if tem_items == False:
-                print('Você não tem items para usar no momento!')
-                break
             try:
                 j= int(input('Digite um item para ser usado: '))
             except ValueError:
                 pass
-            
-            
+            if config[3][j] == None:
+                continue
+            break  
+        itemsCombate(config[3][j])
+        config[3][j]= None
     else:
         print("Tentando fugir...")
         sleep(0.7)
-        chanceDeEscapar = config[0][5] + randint(1,20)
+        chanceDeEscapar = config[0][5] + randint(1,20) + vetor_efeitos[1]
         if chanceDeEscapar < 10:
+            vetor_efeitos[1]= 0
             print("Você correu!!")
             #ENCERRANDO O COMBATE
             return config
@@ -670,11 +691,14 @@ def criarFichaMonstro(inimigo):
 #ATAQUES
 def ataqueJogador(config,escolha, receptor):
     acerto = (randint(1,20))
+    bonus= vetor_efeitos[0]
     sleep(1.2)
     print(f"Você rolou um {acerto}")
+    if bonus != 0:
+        print(f'Com um bonus de {bonus}')
     sleep(0.5)
 #         AGILIDADE     CHANCE     CA-INIMIGO
-    if (config[0][4] + acerto) >= receptor[2]:
+    if (config[0][4] + acerto+ bonus) >= receptor[2]:
         #ACERTOU
         if config[2][escolha] == None:
             print("Não há itens nesse slot, ataque perdido")
@@ -699,12 +723,16 @@ def ataqueJogador(config,escolha, receptor):
 
 def ataqueInimigo(inimigo,config):
     sleep(0.5)
-    acerto = randint(1,20) + inimigo[6]
+    acerto = randint(1,20) + inimigo[6]- vetor_efeitos[1]
     if acerto >= config[2][5]:
-        print(f"O {inimigo[0]} acertou, e utilizando um {inimigo[4]} ele te deu {inimigo[5]} de dano!")
-        config[0][2] -= inimigo[5]
-        sleep(0.5)
-        combate(config, inimigo, "j")
+        if vetor_efeitos[3] == 1:
+            print('O ataque foi bloqueado')
+            vetor_efeitos[3]= 0
+        else:
+            print(f"O {inimigo[0]} acertou, e utilizando um {inimigo[4]} ele te deu {inimigo[5]} de dano!")
+            config[0][2] -= inimigo[5]
+            sleep(0.5)
+            combate(config, inimigo, "j")
     else:
         print(f"o {inimigo[0]} tentou usar {inimigo[4]}, porém errou!!!")
         sleep(0.5)
@@ -775,12 +803,73 @@ def verInventario(config):
     print(f"Verificando a armadura que carrega você vê um(a) {config[1][5]}, que te faz ter {config[2][5]} de CA")
 #COMBATE : (ATOS)
 
+def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (quando usados no mapa) fazem
+    posicaoAnalisada= mapa_gerado[local[0]][local[1]]
+    match tipo_item:
+        case 'Chave':
+            if posicaoAnalisada[0] == 7:
+                posicaoAnalisada= 6
+                print('O baú foi aberto')
+        case 'Isqueiro':
+            if (posicaoAnalisada[0] == 2) or (posicaoAnalisada[0] == 5):
+                posicaoAnalisada= 0
+            elif posicaoAnalisada[0] == 7:
+                choice((1,2))
+                if choice == 1:
+                    print('O baú e o item dentro viraram cinzas')
+                    posicaoAnalisada[0]= 0
+                else:
+                    print('O baú virou cinzas')
+                    posicaoAnalisada[0]= 6
+            posicaoAnalisada[1]= True
+        case 'Lanterna':
+            Lcontador= 0
+            while Lcontador < 5:
+                try:
+                    if direcao == 'w':
+                        mapa_gerado[local[0]-Lcontador][local[1]][1]= True
+                    if direcao == 'a':
+                        mapa_gerado[local[0]][local[1]-Lcontador][1]= True
+                    if direcao == 's':
+                        mapa_gerado[local[0]+Lcontador][local[1]][1]= True
+                    if direcao == 'd':
+                        mapa_gerado[local[0]][local[1]+Lcontador][1]= True
+                    Lcontador+= 1
+                except IndexError:
+                    pass
+            print('O local foi iluminado')
+        case 'Mapa completo':
+            for linha in mapa_gerado:
+                for coluna in linha:
+                    coluna[1]= True
+            print('Seu mapa está completo')
+        case _:
+            print('Você jogou seu item no chão e perdeu ele')
+def itemsCombate(tipo_item):
+    global vetor_efeitos
+    vetor_efeitos= [0, 0, 0, 0]
+    match tipo_item:
+        case 'Amuleto da sorte':
+            vetor_efeitos[0]= 5
+            print('Você está com sorte! Seus ataques praticamente nunca erram!')
+        case 'Bomba de fumaça':
+            vetor_efeitos[1]= 10
+            print('Você está quase invisível')
+        case 'Bagulho que paraliza o inimigo sla':
+            vetor_efeitos[2]= 1
+            print('Seu inimigo foi paralizado')
+        case 'Escudo':
+            vetor_efeitos[3]= 1
+            print('O próximo será defendido')
+        case _:
+            print('O inimigo destruiu seu item')
+#ITEMS : (LEANDRO)
+
 ##################
 #Início do programa principal
-
 #Algums items que eu vou adicionar
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
-              'Bomba de fumaça', 'Bagulho que paraliza o inimigo sla', 'Bomba', 'Amuleto da sorte' #Items de combate (não são ataques)
+              'Bomba de fumaça', 'Bagulho que paraliza o inimigo sla', 'Escudo', 'Amuleto da sorte' #Items de combate (não são ataques)
               ]
 tamanho_inicial_mapa= 14
 r = inicio()
