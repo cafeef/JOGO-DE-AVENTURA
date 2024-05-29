@@ -394,6 +394,8 @@ def EscolhaPersonagem():
     d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca = None, None, None, None, None, None
     item1, item2, item3, item4, item5, xp = 'Chave', None, None, None, None, 20
     r = ApresentacaoPersonagem()
+    global level
+    level = 0
     if r == 1:
         Classe = 'Barbaro'
         print('Você escolheu bárbaro. Você possui: ')
@@ -526,6 +528,7 @@ def combate(config, inimigo, turno):
             print(f" O {inimigo[0]} foi derrotado. Parabens !")
             print(f" Você receber {inimigo[7]} de xp, e agora seu xp é {config[3][5]}")
             config[3][5] += inimigo[7]  
+            uparDeLevel(config)
             mapa_gerado[evento[1]][evento[2]][0]= 0
             vetor_efeitos[0]= 0
             vetor_efeitos[1]= 0
@@ -555,6 +558,86 @@ def combate(config, inimigo, turno):
     else:
         print("VOCÊ MORREU (╥﹏╥) ")
         return False
+    
+def uparDeLevel(config):
+    global level
+    if config[0][0] == 'Barbaro' and level == 1:
+        if config[3][5] >= 100:
+            config[0][1] += 15
+            config[0][2] += 15
+            config[0][3] += 2
+            config[0][5] += 1
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+        
+    elif config[0][0] == 'Barbaro' and level == 2:
+        if config[3][5] >= 400:
+            config[0][1] += 30
+            config[0][2] += 30
+            config[0][3] += 2
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+    elif config[0][0] == 'Barbaro' and level == 3:
+        if config[3][5] >= 900:
+            config[0][1] += 60
+            config[0][2] += 60
+            config[0][3] += 3
+            config[0][5] += 1
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+
+    if config[0][0] == 'Mago' and level == 1:
+        if config[3][5] >= 100:
+            config[0][1] += 8
+            config[0][2] += 8
+            config[0][4] += 3
+            config[0][5] += 1
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+        
+    elif config[0][0] == 'Mago' and level == 2:
+        if config[3][5] >= 400:
+            config[0][1] += 15
+            config[0][2] += 15
+            config[0][4] += 3
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+    elif config[0][0] == 'Mago' and level == 3:
+        if config[3][5] >= 900:
+            config[0][1] += 30
+            config[0][2] += 30
+            config[0][4] += 4
+            config[0][5] += 1
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+    if config[0][0] == 'Guerreiro' and level == 1:
+        if config[3][5] >= 100:
+            config[0][1] += 15
+            config[0][2] += 15
+            config[0][3] += 2
+            config[0][5] += 2
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+        
+    elif config[0][0] == 'Guerreiro' and level == 2:
+        if config[3][5] >= 400:
+            config[0][1] += 30
+            config[0][2] += 30
+            config[0][3] += 1
+            config[0][5] += 1
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+    elif config[0][0] == 'Guerreiro' and level == 3:
+        if config[3][5] >= 900:
+            config[0][1] += 60
+            config[0][2] += 60
+            config[0][3] += 2
+            config[0][5] += 2
+            print(f"Você upou de level!, agora seu level é {level}")
+            level +=1
+
+
+
 
 #MENU JOGADOR
 def menuCombate(config,inimigo):
@@ -1169,7 +1252,7 @@ def itemsCombate(tipo_item):
         case 'Bomba de fumaça':
             vetor_efeitos[1]= 10
             print('Você está quase invisível')
-        case 'Bagulho que paraliza o inimigo sla':
+        case 'Tezar':
             vetor_efeitos[2]= 1
             print('Seu inimigo foi paralizado')
         case 'Escudo':
@@ -1182,7 +1265,7 @@ def itemsCombate(tipo_item):
 #Início do programa principal
 #Algums items que eu vou adicionar
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
-              'Bomba de fumaça', 'Bagulho que paraliza o inimigo sla', 'Escudo', 'Amuleto da sorte' #Items de combate (não são ataques)
+              'Bomba de fumaça', 'Tezar', 'Escudo', 'Amuleto da sorte', 'pocao' #Items de combate (não são ataques)
               ]
 vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
