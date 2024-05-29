@@ -3,7 +3,7 @@ from random import choice
 from colorama import Fore
 from colorama import Style
 from time import sleep
-
+import sys
 '''
 Legenda Numeros (pode ser trocada):
 0- Espaço vazio
@@ -247,6 +247,7 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         print(visualizacaoI)
 
 def movimento(config):
+    global sala
     while True:
         mapa_gerado[yPosition][xPosition][1]= True
         checkWater(xPosition, yPosition)
@@ -277,12 +278,15 @@ def movimento(config):
             i= 0
             for item in config[3]:
                 if item == None:
-                    config[3][i]= vetor_items[randint(1,7)]
+                    config[3][i]= vetor_items[randint(1,8)]
                     break
                 i+= 1
             print(f'Você ganhou um(a) {config[3][i]}')
         if evento[0] == 20:
             print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
+            sala+= 1
+            if len(vetor_dificuldade != 1):
+                del vetor_dificuldade[0]
             iniciandoMapa(tamanho_inicial_mapa)
         MenuDeAcoes(config)
 def iniciandoMapa(n):
@@ -290,18 +294,37 @@ def iniciandoMapa(n):
     global mapa_gerado
     mapa_gerado= inicializa(tamanho)
     wall= []
-
+    
     #Gerando o mapa
-    geradorInimigo(mapa_gerado)
+    i= 0
+    escalar= 0
+    if sala > 5:
+        escalar+= sala
+    while i < 6+escalar:
+        geradorInimigo(mapa_gerado, choice(vetor_dificuldade))
+        i+= 1
     i=0
-    while i <8:
+    while i < 6:
         geradorAmbiente(mapa_gerado, 4, 3)
         i+=1
     geradorEstrutura(mapa_gerado, 3, 4)
     geradorEstrutura(mapa_gerado, 3, 3)
-    geradorRio(mapa_gerado[3:5])
-    geradorLago(mapa_gerado, 3)
-    geradorBau(mapa_gerado)
+    terAgua= choice((1,2,3,4,5))
+    aguaRand= randint(2, tamanho-3)
+    if (terAgua == 1) or (terAgua == 2):
+        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
+    elif terAgua == 3:
+        geradorLago(mapa_gerado, randint(3,4))
+    elif terAgua == 4:
+        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
+        geradorLago(mapa_gerado, 3)
+    else:
+        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
+        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
+    i= 0
+    while i < randint(3, 6):
+        geradorBau(mapa_gerado)
+        i+= 1
     geradorArmadilha(mapa_gerado)
 
 
@@ -441,10 +464,6 @@ def EscolhaPersonagem():
 def MenuDeAcoes(config):
     #Montar o menu de ações (que vai ser exibido sempre)
     #mover, atacar, fugir, abrir, descansar e listar inventário. #
-    '''Eu acho melhor usar a mesma lógica de movimento que eu tinha ali em cima e
-       com base na posição do evento (se o evento for 7) o jogador pode usar a chave na posição do 7
-       e então posso substituir o 7 local pelo 6 para que o jogador possa pegar o item - Leandro
-    ''' #Se mudar de ideia podemos ir no histórico do github e voltar ao que era antes
     print('Escolha o que deseja fazer: [1] MOVER | [2] USAR ITEM | [3] DESCANSAR | [4] INVENTÁRIO')
     #Permite que o jogador continue a jogar caso ele digite uma letra e ocorra ValueError
     while True:
@@ -549,7 +568,7 @@ def combate(config, inimigo, turno):
                 elif vetor_efeitos[2] == 1:
                     print(f'O inimigo {inimigo[0]} está paralizado nesse turno')
                     vetor_efeitos[2]= 0
-                    return config
+                    combate(config, inimigo, "j")
                 #SE O JOGADOR TIVER VIDA, PASSE O COMBATE DE VOLTA PARA ELE
                 else: 
                     return config
@@ -557,8 +576,7 @@ def combate(config, inimigo, turno):
     #SE NÃO, ENCERRE O COMBATE
     else:
         print("VOCÊ MORREU (╥﹏╥) ")
-        return False
-    
+        sys.exit()
 def uparDeLevel(config):
     global level
     if config[0][0] == 'Barbaro' and level == 1:
@@ -664,7 +682,7 @@ def menuCombate(config,inimigo):
                 j = int(input("Escolha um item a ser usado:  "))
             except ValueError:
                 pass
-        ataqueJogador(config, j , inimigo)
+        return ataqueJogador(config, j , inimigo)
 
     elif n == "INVENTARIO":
         #MOSTRANDO O INVENTARIO
@@ -711,7 +729,7 @@ def menuCombate(config,inimigo):
             print("O inimigo não te deixa partir, e agora é o turno dele!!")
             sleep(0.5)
             #PASSANDO O TURNO DE VOLTA PARA O INIMIGO
-            combate(config,inimigo,"i")
+            return combate(config,inimigo,"i")
 
 #GERADORES
 def criarFichaMonstro(dificuldade):
@@ -1252,7 +1270,7 @@ def itemsCombate(tipo_item):
         case 'Bomba de fumaça':
             vetor_efeitos[1]= 10
             print('Você está quase invisível')
-        case 'Tezar':
+        case 'Tazer':
             vetor_efeitos[2]= 1
             print('Seu inimigo foi paralizado')
         case 'Escudo':
@@ -1265,10 +1283,12 @@ def itemsCombate(tipo_item):
 #Início do programa principal
 #Algums items que eu vou adicionar
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
-              'Bomba de fumaça', 'Tezar', 'Escudo', 'Amuleto da sorte', 'pocao' #Items de combate (não são ataques)
+              'Bomba de fumaça', 'Tazer', 'Escudo', 'Amuleto da sorte', 'pocao' #Items de combate (não são ataques)
               ]
+vetor_dificuldade= [10, 10, 10, 10, 10, 11, 12, 12, 12, 12, 12, 13]
 vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
+sala= 0
 while True:
     r = inicio()
     if r == 1:  
@@ -1277,7 +1297,8 @@ while True:
         while True: 
             if MenuDeAcoes(config) == False:
                 break
-        print('Status da tentativa')
+        print('bixo')
+            
     if r == 2:
         print('Que pena! Espero que volte logo!')
         break
