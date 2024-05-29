@@ -27,19 +27,14 @@ def inicializa(tamanho):
         mapa_.append(line)
     return mapa_
 #Gera um inimigo baseado em dificuldade(quanto maior o número mais forte é o inimigo) em qualquer região do mapa
-def geradorInimigo(spawn_zone, dificuldade= 1):
+def geradorInimigo(spawn_zone, dificuldade= 10):
     randomy= randint(0, len(spawn_zone)-1)
     randomx= randint(0, len(spawn_zone)-1)
     if spawn_zone[randomy][randomx][0] != 0:
         geradorInimigo(spawn_zone, dificuldade)
     else:
         try:
-            if dificuldade == 1:
-                spawn_zone[randomy][randomx][0]= randint(10, 11)
-            elif dificuldade == 2:
-                spawn_zone[randomy][randomx][0]= 12
-            else:
-                spawn_zone[randomy][randomx][0]= 13
+            spawn_zone[randomy][randomx][0]= dificuldade
         except IndexError:
             geradorInimigo(spawn_zone, dificuldade)
 #Gera uma armadilha no mapa
@@ -268,9 +263,6 @@ def movimento(config):
         checkWater(xPosition, yPosition)
         mapa_gerado[yPosition][xPosition][1]= True
         transformadorUI(mapa_gerado, yPosition, xPosition)
-        print(xPosition)
-        print(yPosition)
-        print(evento)
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
         if evento[0] == 6:
@@ -285,7 +277,7 @@ def movimento(config):
         if evento[0] == 20:
             print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
             sala+= 1
-            if len(vetor_dificuldade != 1):
+            if len(vetor_dificuldade) != 1:
                 del vetor_dificuldade[0]
             iniciandoMapa(tamanho_inicial_mapa)
         MenuDeAcoes(config)
@@ -1297,7 +1289,6 @@ while True:
         while True: 
             if MenuDeAcoes(config) == False:
                 break
-        print('bixo')
             
     if r == 2:
         print('Que pena! Espero que volte logo!')
