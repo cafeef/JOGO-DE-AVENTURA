@@ -197,7 +197,7 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                 visualizacaoS+= '   '
                 visualizacaoI+= 'P  '
                 continue
-            if True:
+            if colunas[1] == True:
                 #Comparando colunas[0] com cada case e adicionando na linha de visualização o símbolo correspondente
                 #Biblioteca colorama permite adicionar cor ao texto
                 match colunas[0]:
@@ -264,8 +264,9 @@ def movimento(config):
         else:
             print('Direção inválida')
             continue
-        transformadorUI(mapa_gerado, yPosition, xPosition)
+        checkWater(xPosition, yPosition)
         mapa_gerado[yPosition][xPosition][1]= True
+        transformadorUI(mapa_gerado, yPosition, xPosition)
         print(xPosition)
         print(yPosition)
         print(evento)
