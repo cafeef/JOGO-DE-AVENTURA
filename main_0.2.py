@@ -159,7 +159,7 @@ def geradorBau(spawn_zone):
 #Verifica se o player está perto de água
 def checkWater(xpos : int, ypos : int):
     for y, x in ((1,0),(-1,0),(0,1),(0,-1)):
-        if mapa_gerado[ypos+y][xpos+x] == 3:
+        if mapa_gerado[ypos+y][xpos+x][0] == 3:
             mapa_gerado[ypos+y][xpos+x][1]= True
 #Verifica se o jogador pode ir em uma direção
 #Marca território percorrido
