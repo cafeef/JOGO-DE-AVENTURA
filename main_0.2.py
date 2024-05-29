@@ -452,7 +452,8 @@ def MenuDeAcoes(config):
         except ValueError:
             pass
     if r == 1:
-        movimento(config)
+        if movimento(config) == False:
+            return False
     if r == 2:
         tem_item= False
         conta= 0
@@ -1185,11 +1186,15 @@ vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
               ]
 vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
-r = inicio()
-if r == 1:  
-    config = EscolhaPersonagem()
-    iniciandoMapa(tamanho_inicial_mapa)
-    while True: 
-        MenuDeAcoes(config)
-if r == 2:
-    print('Que pena! Espero que volte logo!')
+while True:
+    r = inicio()
+    if r == 1:  
+        config = EscolhaPersonagem()
+        iniciandoMapa(tamanho_inicial_mapa)
+        while True: 
+            if MenuDeAcoes(config) == False:
+                break
+        print('Status da tentativa')
+    if r == 2:
+        print('Que pena! Espero que volte logo!')
+        break
