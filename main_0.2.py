@@ -15,6 +15,7 @@ Legenda Numeros (pode ser trocada):
 6- Item (quando o jogador passa por 6 um item é adicionado ao seu inventário e o local é substituido por 0)
 7- Baú (pode ser destruído)(contém um item)(pode ser aberto usando uma chave)
 8- Armadilha (não definido)
+9- Chave
 '''
 #Inicializando matriz vazia quadrada de tamanho escolhido
 def inicializa(tamanho):
@@ -37,6 +38,16 @@ def geradorInimigo(spawn_zone, dificuldade= 10):
             spawn_zone[randomy][randomx][0]= dificuldade
         except IndexError:
             geradorInimigo(spawn_zone, dificuldade)
+def geradorChave(spawn_zone):
+    randomy= randint(0, len(spawn_zone)-1)
+    randomx= randint(0, len(spawn_zone)-1)
+    if spawn_zone[randomy][randomx][0] != 0:
+        geradorChave(spawn_zone)
+    else:
+        try:
+            spawn_zone[randomy][randomx][0]= 9
+        except IndexError:
+            geradorChave(spawn_zone)
 #Gera uma armadilha no mapa
 def geradorArmadilha(spawn_zone):
     randomy= randint(0, len(spawn_zone)-1)
@@ -192,7 +203,7 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                 visualizacaoS+= '   '
                 visualizacaoI+= 'P  '
                 continue
-            if colunas[1] == True:
+            if True:
                 #Comparando colunas[0] com cada case e adicionando na linha de visualização o símbolo correspondente
                 #Biblioteca colorama permite adicionar cor ao texto
                 match colunas[0]:
@@ -216,13 +227,16 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                         visualizacaoI+= f'{Fore.YELLOW}{Style.DIM}#  {Style.RESET_ALL}'
                     case 6:
                         visualizacaoS+= '   '
-                        visualizacaoI+= f'{Fore.LIGHTYELLOW_EX}§  {Style.RESET_ALL}'
+                        visualizacaoI+= f'{Fore.LIGHTYELLOW_EX}{Style.BRIGHT}§  {Style.RESET_ALL}'
                     case 7:
                         visualizacaoS+= f'{Fore.YELLOW}$  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.YELLOW}B  {Style.RESET_ALL}'
                     case 8:
                         visualizacaoS+= f'{Fore.LIGHTRED_EX}_  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.LIGHTRED_EX}X  {Style.RESET_ALL}'
+                    case 9:
+                        visualizacaoS+= f'{Fore.LIGHTWHITE_EX}{Style.BRIGHT}   {Style.RESET_ALL}'
+                        visualizacaoI+= f'{Fore.LIGHTWHITE_EX}{Style.BRIGHT}f  {Style.RESET_ALL}'
                     case 19:
                         visualizacaoS+= f'{Fore.WHITE}^  {Style.RESET_ALL}'
                         visualizacaoI+= f'{Fore.WHITE}|  {Style.RESET_ALL}'
@@ -242,44 +256,56 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         print(visualizacaoI)
 
 def movimento(config):
-    global sala
-    while True:
-        mapa_gerado[yPosition][xPosition][1]= True
-        checkWater(xPosition, yPosition)
-        comando= str(input('Escolha uma direção para ir: '))
-        comando= comando.lower()
-        global evento
-        if comando == 'w':
-            evento= verificandoEspaço(-2)
-        elif comando == 's':
-            evento= verificandoEspaço(2)
-        elif comando == 'd':
-            evento= verificandoEspaço(1)
-        elif comando == 'a':
-            evento= verificandoEspaço(-1)
-        else:
-            print('Direção inválida')
-            continue
+        global sala
+        while True:
+            mapa_gerado[yPosition][xPosition][1]= True
+            checkWater(xPosition, yPosition)
+            comando= str(input('Escolha uma direção para ir: '))
+            comando= comando.lower()
+            global evento
+            if comando == 'w':
+                evento= verificandoEspaço(-2)
+                break
+            elif comando == 's':
+                evento= verificandoEspaço(2)
+                break
+            elif comando == 'd':
+                evento= verificandoEspaço(1)
+                break
+            elif comando == 'a':
+                evento= verificandoEspaço(-1)
+                break
+            else:
+                print('Direção inválida')
         checkWater(xPosition, yPosition)
         mapa_gerado[yPosition][xPosition][1]= True
         transformadorUI(mapa_gerado, yPosition, xPosition)
         if 10 <= evento[0] <= 13:
             combate(config, criarFichaMonstro(evento[0]), "j")
-        if evento[0] == 6:
-            mapa_gerado[evento[1]][evento[2]][0]= 0
+        elif evento[0] == 6:
             i= 0
             for item in config[3]:
                 if item == None:
+                    mapa_gerado[evento[1]][evento[2]][0]= 0
                     config[3][i]= vetor_items[randint(1,8)]
+                    print(f'Você ganhou um(a) {config[3][i]}')
                     break
                 i+= 1
-            print(f'Você ganhou um(a) {config[3][i]}')
-        if evento[0] == 20:
+        elif evento[0] == 9:
+            i= 0
+            for item in config[3]:
+                if item == None:
+                    mapa_gerado[evento[1]][evento[2]][0]= 0
+                    config[3][i]= 'Chave'
+                    print(f'Você ganhou uma Chave')
+                    break
+                i+= 1
+        elif evento[0] == 20:
             print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
             sala+= 1
-            if len(vetor_dificuldade) != 1:
-                del vetor_dificuldade[0]
             iniciandoMapa(tamanho_inicial_mapa)
+        elif evento[0] == 19:
+            print('Acima de você há uma passagem!')
         MenuDeAcoes(config)
 def iniciandoMapa(n):
     tamanho= n
@@ -290,23 +316,25 @@ def iniciandoMapa(n):
     #Gerando o mapa
     i= 0
     escalar= 0
-    if sala > 5:
+    if sala > 3:
         escalar+= sala
     while i < 6+escalar:
-        geradorInimigo(mapa_gerado, choice(vetor_dificuldade))
+        geradorInimigo(mapa_gerado, 10+randint(0,sala))
         i+= 1
     i=0
     while i < 6:
         geradorAmbiente(mapa_gerado, 4, 3)
         i+=1
-    geradorEstrutura(mapa_gerado, 3, 4)
-    geradorEstrutura(mapa_gerado, 3, 3)
+    i= 0
+    while i < randint(1,2):
+        geradorEstrutura(mapa_gerado, randint(3,4), randint(3,4))
+        i+= 1
     terAgua= choice((1,2,3,4,5))
     aguaRand= randint(2, tamanho-3)
     if (terAgua == 1) or (terAgua == 2):
-        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
-    elif terAgua == 3:
         geradorLago(mapa_gerado, randint(3,4))
+    elif terAgua == 3:
+        geradorRio(mapa_gerado[aguaRand: aguaRand+2])
     elif terAgua == 4:
         geradorRio(mapa_gerado[aguaRand: aguaRand+2])
         geradorLago(mapa_gerado, 3)
@@ -316,6 +344,10 @@ def iniciandoMapa(n):
     i= 0
     while i < randint(3, 6):
         geradorBau(mapa_gerado)
+        i+= 1
+    i= 0
+    while i < randint(3, 6):
+        geradorChave(mapa_gerado)
         i+= 1
     geradorArmadilha(mapa_gerado)
 
@@ -568,6 +600,7 @@ def combate(config, inimigo, turno):
     #SE NÃO, ENCERRE O COMBATE
     else:
         print("VOCÊ MORREU (╥﹏╥) ")
+        print(f'Florestas percorridas: {sala}')
         sys.exit()
 def uparDeLevel(config):
     global level
@@ -1129,6 +1162,7 @@ def ataqueInimigo(inimigo,config):
         if vetor_efeitos[3] == 1:
             print('O ataque foi bloqueado')
             vetor_efeitos[3]= 0
+            combate(config, inimigo, "j")
         else:
             print(f"O {inimigo[0]} acertou, e utilizando um {inimigo[4]} ele te deu {inimigo[5]} de dano!")
             config[0][2] -= inimigo[5]
@@ -1277,19 +1311,15 @@ def itemsCombate(tipo_item):
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
               'Bomba de fumaça', 'Tazer', 'Escudo', 'Amuleto da sorte', 'pocao' #Items de combate (não são ataques)
               ]
-vetor_dificuldade= [10, 10, 10, 10, 10, 11, 12, 12, 12, 12, 12, 13]
 vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
 sala= 0
-while True:
-    r = inicio()
-    if r == 1:  
-        config = EscolhaPersonagem()
-        iniciandoMapa(tamanho_inicial_mapa)
-        while True: 
-            if MenuDeAcoes(config) == False:
-                break
+r = inicio()
+if r == 1:  
+    config = EscolhaPersonagem()
+    iniciandoMapa(tamanho_inicial_mapa)
+    while True: 
+        MenuDeAcoes(config)
             
-    if r == 2:
-        print('Que pena! Espero que volte logo!')
-        break
+if r == 2:
+    print('Que pena! Espero que volte logo!')
