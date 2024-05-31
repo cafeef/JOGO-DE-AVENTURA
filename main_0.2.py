@@ -281,7 +281,9 @@ def movimento(config):
         mapa_gerado[yPosition][xPosition][1]= True
         transformadorUI(mapa_gerado, yPosition, xPosition)
         if 10 <= evento[0] <= 13:
-            combate(config, criarFichaMonstro(evento[0]), "j")
+            monstro_atual= criarFichaMonstro(evento[0])
+            combate(config, monstro_atual, "j")
+            vasculharRestos(config, monstro_atual)
         elif evento[0] == 6:
             i= 0
             for item in config[3]:
@@ -346,12 +348,10 @@ def iniciandoMapa(n):
         geradorBau(mapa_gerado)
         i+= 1
     i= 0
-    while i < randint(3, 6):
+    while i < randint(3, 5):
         geradorChave(mapa_gerado)
         i+= 1
     geradorArmadilha(mapa_gerado)
-
-
 
     #Adicionando bordas
     for linha in mapa_gerado:
@@ -1182,6 +1182,7 @@ def vasculharRestos(config, inimigo):
         e = ""
         while e != "SIM" and e != "NAO":
             e = input("SIM ou NAO:  ")
+            e= e.upper()
         if e == "SIM":
             i = 0
             invfull = 0
@@ -1294,7 +1295,7 @@ def itemsCombate(tipo_item):
             vetor_efeitos[0]= 5
             print('Você está com sorte! Seus ataques praticamente nunca erram!')
         case 'Bomba de fumaça':
-            vetor_efeitos[1]= 10
+            vetor_efeitos[1]= 15
             print('Você está quase invisível')
         case 'Tazer':
             vetor_efeitos[2]= 1
