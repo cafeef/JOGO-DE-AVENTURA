@@ -308,7 +308,9 @@ def movimento(config):
             iniciandoMapa(tamanho_inicial_mapa)
         elif evento[0] == 19:
             print('Acima de você há uma passagem!')
-        MenuDeAcoes(config)
+        elif evento[0] == 8:
+            print('Você é surpreendido por uma armadilha!')
+            mapa_gerado[evento[1]][evento[2]][0]= 0
 def iniciandoMapa(n):
     tamanho= n
     global mapa_gerado
@@ -535,6 +537,9 @@ def MenuDeAcoes(config):
                 print('Direção inválida')
                 continue
             itemsMapa(item_usar, evento[1:], comando)
+            if evento[0] == 8:
+                print('Uma armadilha foi ativada com o seu item')
+                mapa_gerado[evento[1]][evento[2]][0]= 0
             sleep(2)
             transformadorUI(mapa_gerado, yPosition, xPosition)
             print(f'Você usou {item_usar}')
@@ -549,14 +554,15 @@ def MenuDeAcoes(config):
         while fim >= 0:
             while i <= (fim - 1):
                 p = config[3][i]
-                if p == 'pocao':
+                if p == 'Poção':
                     print('Você escolheu descansar.')
                     dif = config[0][1] - config[0][2]
                     config[0][2] = config[0][2] + dif
                     print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
+                elif i == (fim -1):
+                    print('Você não tem a poção necessária para descansar.')
                 i += 1
             fim -= 1
-        print('Você não tem a poção necessária para descansar.')
         
     if r == 4: 
         verInventario(config)
@@ -1248,6 +1254,7 @@ def verInventario(config):
 
 def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (quando usados no mapa) fazem
     posicaoAnalisada= mapa_gerado[local[0]][local[1]]
+    
     match tipo_item:
         case 'Chave':
             if posicaoAnalisada[0] == 7:
@@ -1268,7 +1275,7 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
             mapa_gerado[local[0]][local[1]][1]= True
         case 'Lanterna':
             Lcontador= 0
-            while Lcontador < 5:
+            while Lcontador < 6:
                 try:
                     if direcao == 'w':
                         mapa_gerado[local[0]-Lcontador][local[1]][1]= True
@@ -1310,7 +1317,8 @@ def itemsCombate(tipo_item):
 #Início do programa principal
 #Algums items que eu vou adicionar
 vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
-              'Bomba de fumaça', 'Tazer', 'Escudo', 'Amuleto da sorte', 'pocao' #Items de combate (não são ataques)
+              'Bomba de fumaça', 'Tazer', 'Escudo', 'Amuleto da sorte', #Items de combate (não são ataques)
+               'Poção', #Outros items
               ]
 vetor_efeitos= [0, 0, 0, 0]
 tamanho_inicial_mapa= 14
