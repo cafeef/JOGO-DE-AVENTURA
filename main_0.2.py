@@ -400,10 +400,13 @@ def inicio():
     r = 0
     print('------------------\n SEJA BEM VINDO!  \nESCOLHA UMA OPÇÃO:\n------------------ ')
     print('[1] INICIAR O JOGO \n[2] SAIR')
-    r = int(input(''))
-    while r != 1 and r != 2: 
-        print('ESCOLHA UMA OPÇÃO VÁLIDA: ')
+    try:
         r = int(input(''))
+        while r != 1 and r != 2: 
+            print('ESCOLHA UMA OPÇÃO VÁLIDA: ')
+            r = int(input(''))
+    except ValueError:
+        inicio()
     if r == 1:
         return 1
     if r == 2: 
@@ -414,29 +417,31 @@ def ApresentacaoPersonagem():
     while c == 0:
         print('Escolha a classe que deseja saber mais: \n')
         print('[1] BÁRBARO \n[2] GUERREIRO \n[3] MAGO')
-        r = int(input(''))
-        if r == 1: 
-            print('BÁRBARO: São guerreiros de origem selvagem.\nEles não tem refinamento algum em seu jeito de lutar, dando espaço ao uso de força bruta.\nPresumivelmente, também não são muito inteligentes.')
-            print('Deseja confirmar BÁRBARO como sua escolha? ')
-            print('[1] SIM [0] NÃO')
-            c = int(input(''))
-            if c == 1:
-                return 1
-        if r == 2:
-            print('GUERREIRO: Guerreiros são exímios lutadores marciais, sempre prontos para o combate. Possuem extremas habilidades de combate.')
-            print('Deseja confirmar GUERREIRO como sua escolha? ')
-            print('[2] SIM [0] NÃO')
-            c = int(input(''))
-            if c == 2:
-                return 2
-        if r == 3:
-            print('MAGO: Se distingue pela capacidade de lançar certos tipos de magia, possuindo alta inteligência mas sendo fraco em combate.')
-            print('Deseja confirmar MAGO como sua escolha? ')
-            print('[3] SIM [0] NÃO')
-            c = int(input(''))
-            if c == 3:
-                return 3
-            
+        try:
+            r = int(input(''))
+            if r == 1: 
+                print('BÁRBARO: São guerreiros de origem selvagem.\nEles não tem refinamento algum em seu jeito de lutar, dando espaço ao uso de força bruta.\nPresumivelmente, também não são muito inteligentes.')
+                print('Deseja confirmar BÁRBARO como sua escolha? ')
+                print('[1] SIM [0] NÃO')
+                c = int(input(''))
+                if c == 1:
+                    return 1
+            if r == 2:
+                print('GUERREIRO: Guerreiros são exímios lutadores marciais, sempre prontos para o combate. Possuem extremas habilidades de combate.')
+                print('Deseja confirmar GUERREIRO como sua escolha? ')
+                print('[2] SIM [0] NÃO')
+                c = int(input(''))
+                if c == 2:
+                    return 2
+            if r == 3:
+                print('MAGO: Se distingue pela capacidade de lançar certos tipos de magia, possuindo alta inteligência mas sendo fraco em combate.')
+                print('Deseja confirmar MAGO como sua escolha? ')
+                print('[3] SIM [0] NÃO')
+                c = int(input(''))
+                if c == 3:
+                    return 3
+        except ValueError:
+            ApresentacaoPersonagem()    
 def EscolhaPersonagem():
     Classe, Forc, Inte, Agl = None, None, None, None
     ataque1, ataque2, ataque3, ataque4, ataque5, armadura = None, None, None, None, None, None
