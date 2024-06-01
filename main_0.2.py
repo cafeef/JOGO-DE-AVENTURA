@@ -254,7 +254,9 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         count1+=1
         print(visualizacaoS)
         print(visualizacaoI)
-
+#Verifica se é possível completar o nível ou não
+def checkFinal(initial_y, initial_x):
+    pass
 def movimento(config):
         global sala
         while True:
@@ -357,16 +359,16 @@ def iniciandoMapa(n):
 
     #Adicionando bordas
     for linha in mapa_gerado:
-        linha.insert(0, [1, False])
-        linha.append([1, False])
+        linha.insert(0, [1, True])
+        linha.append([1, True])
 
     for i in range(0, tamanho+2):
-        wall.append([1, False])
+        wall.append([1, True])
     mapa_gerado.insert(0, wall)
     #Reset para evitar criar 2 vetores com mesmo endereço de memória e acidentalmente criar 2 saidas
     wall= []
     for i in range(0, tamanho+2):
-        wall.append([1, False])
+        wall.append([1, True])
     mapa_gerado.append(wall)
     saida= randint(1,tamanho)
     mapa_gerado[0][saida][0]= 20
@@ -385,14 +387,6 @@ def iniciandoMapa(n):
     global xPosition
     xPosition= starting_spawn
     #Verificando se o jogador não está preso
-    if mapa_gerado[yPosition][xPosition][0] != 0:
-        mapa_gerado[yPosition][xPosition][0]= 0
-    if mapa_gerado[yPosition-1][xPosition][0] != 0:
-        if mapa_gerado[yPosition][xPosition-1][0]!= 0:
-            if (mapa_gerado[yPosition][xPosition+1][0] != 0) and (mapa_gerado[yPosition][xPosition+1][0] != 1):
-                mapa_gerado[yPosition][xPosition+1][0]= 0
-            elif mapa_gerado[yPosition][xPosition+1][0] == 1:
-                mapa_gerado[yPosition][xPosition-1][0]= 0
 
 #MAPA : (LEANDRO)
 #MENU INICIAL : (FERNANDA)
@@ -564,9 +558,12 @@ def MenuDeAcoes(config):
                     dif = config[0][1] - config[0][2]
                     config[0][2] = config[0][2] + dif
                     print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
+                    break
                 elif i == (fim -1):
                     print('Você não tem a poção necessária para descansar.')
                 i += 1
+            if p == 'Poção':
+                break
             fim -= 1
         
     if r == 4: 
