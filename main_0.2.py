@@ -255,8 +255,42 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
         print(visualizacaoS)
         print(visualizacaoI)
 #Verifica se é possível completar o nível ou não
-def checkFinal(initial_y, initial_x):
-    pass
+def checkFinal(initial_y: int, initial_x: int, orientacao: list):
+    pawnY= initial_y
+    pawnX= initial_x
+    guia_orientacao= ((-1,0), (0,1), (1,0), (0,-1))
+    fowardBlock= mapa_gerado[pawnY+ orientacao[0]][pawnX+ orientacao[1]][0]
+    rightBlock= mapa_gerado[pawnY+ orientacao[1]][pawnX+ (orientacao[0]*-1)][0]
+    if fowardBlock == 19:
+        return True
+    if rightBlock != 1 and rightBlock != 2 and rightBlock != 4 and rightBlock != 5 and rightBlock != 7:
+        i= 0
+        while i < 4:
+            if orientacao == guia_orientacao[i]:
+                if orientacao == guia_orientacao[-1]:
+                    orientacao= guia_orientacao[0]
+                else:
+                    orientacao= guia_orientacao[i+1]
+                break
+            i+= 1
+        pawnY+= orientacao[0]
+        pawnX+= orientacao[1]
+
+    else:
+        i= 0
+        while i < 4:
+            if orientacao == guia_orientacao[i]:
+                if orientacao == guia_orientacao[0]:
+                    orientacao= guia_orientacao[-1]
+                else:
+                    orientacao= guia_orientacao[i-1]
+                break
+            i+= 1
+    try:
+        return checkFinal(pawnY, pawnX, orientacao)
+    except RecursionError: #Quando o peão passa de 1000 movimentos o programa determina o mapa como impossível
+        return False
+    
 def movimento(config):
         global sala
         while True:
@@ -328,7 +362,7 @@ def iniciandoMapa(n):
         geradorInimigo(mapa_gerado, 10+randint(0,sala))
         i+= 1
     i=0
-    while i < 6:
+    while i < 10:
         geradorAmbiente(mapa_gerado, 4, 3)
         i+=1
     i= 0
@@ -386,8 +420,8 @@ def iniciandoMapa(n):
             break
     global xPosition
     xPosition= starting_spawn
-    #Verificando se o jogador não está preso
-
+    if checkFinal(len(mapa_gerado)-2, starting_spawn, (-1, 0)) == False:
+        iniciandoMapa(n)
 #MAPA : (LEANDRO)
 #MENU INICIAL : (FERNANDA)
 def inicio():
