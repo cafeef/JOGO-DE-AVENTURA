@@ -1366,15 +1366,15 @@ sala= 0
 r = inicio()
 if r == 1:  
     config = EscolhaPersonagem()
-    print(f'Antes de começar, um rapido totorial sobre o jogo.')
-    print(f'Seu objetivo é conseguir o máximo de pontos possiveis, ao mesmo tempo que atrávessa o máximo de salas possiveis.')
-    print(f'O mapa está totalmente escuro, e se revela-ra enquanto você anda por ele.')
-    print("Haverá itens durante sua jornada, o que eles podem fazer faz parte do jogo descobrir")
+    print(f'Antes de começar, um rápido tutorial sobre o jogo:.')
+    print(f'Seu objetivo é conseguir o máximo de pontos possíveis, ao mesmo tempo que atravessa o máximo de salas.')
+    print(f'O mapa está totalmente escuro, e se revelará enquanto você anda por ele.')
+    print("Haverá itens durante sua jornada, você só saberá o que eles podem fazer ao achá-los.")
     print("Legenda: ")
-    print("Arvoré")
+    print("Árvore:")
     print(f"{Fore.GREEN}_  {Style.RESET_ALL}")
     print(f'{Fore.GREEN}T  {Style.RESET_ALL}')
-    print("Água")
+    print("Água:")
     print(f"{Fore.BLUE}~  {Style.RESET_ALL}")
     print(f'{Fore.BLUE}~  {Style.RESET_ALL}')
     print("Pedra:")
@@ -1397,7 +1397,7 @@ if r == 1:
     print("Inimigo:")
     print(f' {Fore.RED}O {Style.RESET_ALL}')
     print(f'{Fore.RED}| |{Style.RESET_ALL}')
-    print("\n\nBom jogo!")
+    print("\n\nBom jogo!\n")
 
 
 
