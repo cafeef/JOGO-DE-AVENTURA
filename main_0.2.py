@@ -644,6 +644,7 @@ def combate(config, inimigo, turno):
     else:
         print("VOCÊ MORREU (╥﹏╥) ")
         print(f'Florestas percorridas: {sala}')
+        print(f'Pontuação total: {config[3][5]}')
         sys.exit()
 def uparDeLevel(config):
     global level
@@ -1365,6 +1366,43 @@ sala= 0
 r = inicio()
 if r == 1:  
     config = EscolhaPersonagem()
+    print(f'Antes de começar, um rapido totorial sobre o jogo.')
+    print(f'Seu objetivo é conseguir o máximo de pontos possiveis, ao mesmo tempo que atrávessa o máximo de salas possiveis.')
+    print(f'O mapa está totalmente escuro, e se revela-ra enquanto você anda por ele.')
+    print("Legenda: ")
+    print("Arvoré")
+    print(f"{Fore.GREEN}_  {Style.RESET_ALL}")
+    print(f'{Fore.GREEN}T  {Style.RESET_ALL}')
+    print("Água")
+    print(f"{Fore.BLUE}~  {Style.RESET_ALL}")
+    print(f'{Fore.BLUE}~  {Style.RESET_ALL}')
+    print("Pedra:")
+    print(f'{Fore.LIGHTBLACK_EX}_  {Style.RESET_ALL}')
+    print(f'{Fore.LIGHTBLACK_EX}o  {Style.RESET_ALL}')
+    print("Parede de Madeira:")
+    print(f'{Fore.YELLOW}{Style.DIM}#  {Style.RESET_ALL}')
+    print(f'{Fore.YELLOW}{Style.DIM}#  {Style.RESET_ALL}')
+    print("Item:")
+    print(f'{Fore.LIGHTYELLOW_EX}{Style.BRIGHT}§  {Style.RESET_ALL}')
+    print("Baú:")
+    print(f'{Fore.YELLOW}$  {Style.RESET_ALL}')
+    print(f'{Fore.YELLOW}B  {Style.RESET_ALL}')
+    print("Armadilha:")
+    print(f'{Fore.LIGHTRED_EX}_  {Style.RESET_ALL}')
+    print(f'{Fore.LIGHTRED_EX}X  {Style.RESET_ALL}')
+    print("Chave:")
+    print(f'{Fore.LIGHTWHITE_EX}{Style.BRIGHT}   {Style.RESET_ALL}')
+    print(f'{Fore.LIGHTWHITE_EX}{Style.BRIGHT}f  {Style.RESET_ALL}')
+    print("Inimigo:")
+    print(f' {Fore.RED}O {Style.RESET_ALL}')
+    print(f'{Fore.RED}| |{Style.RESET_ALL}')
+
+
+
+
+
+
+
     iniciandoMapa(tamanho_inicial_mapa)
     while True: 
         MenuDeAcoes(config)
