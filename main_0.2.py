@@ -1158,7 +1158,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append("( ͡° ͜ʖ ͡°)")
             inimigoConfig.append(100)
             inimigoConfig.append(20)
-            inimigoConfig.append("¯\_(ツ)_/¯")
+            inimigoConfig.append("¯\\_(ツ)_/¯")
             inimigoConfig.append("(ง︡'-'︠)ง")
             inimigoConfig.append(8)
             inimigoConfig.append(10)
