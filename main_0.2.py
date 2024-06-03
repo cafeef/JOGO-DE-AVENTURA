@@ -1369,6 +1369,7 @@ if r == 1:
     print(f'Antes de começar, um rapido totorial sobre o jogo.')
     print(f'Seu objetivo é conseguir o máximo de pontos possiveis, ao mesmo tempo que atrávessa o máximo de salas possiveis.')
     print(f'O mapa está totalmente escuro, e se revela-ra enquanto você anda por ele.')
+    print("Haverá itens durante sua jornada, o que eles podem fazer faz parte do jogo descobrir")
     print("Legenda: ")
     print("Arvoré")
     print(f"{Fore.GREEN}_  {Style.RESET_ALL}")
@@ -1396,7 +1397,7 @@ if r == 1:
     print("Inimigo:")
     print(f' {Fore.RED}O {Style.RESET_ALL}')
     print(f'{Fore.RED}| |{Style.RESET_ALL}')
-
+    print("\n\nBom jogo!")
 
 
 
