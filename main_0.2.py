@@ -163,9 +163,9 @@ def geradorBau(spawn_zone):
         except IndexError:
             geradorBau(spawn_zone)
 #Verifica se o player está perto de água
-def checkWater(xpos : int, ypos : int):
+def checkNearVisible(xpos : int, ypos : int):
     for y, x in ((1,0),(-1,0),(0,1),(0,-1)):
-        if mapa_gerado[ypos+y][xpos+x][0] == 3:
+        if mapa_gerado[ypos+y][xpos+x][0] != 10 and mapa_gerado[ypos+y][xpos+x][0] != 11 and mapa_gerado[ypos+y][xpos+x][0] != 12 and mapa_gerado[ypos+y][xpos+x][0] != 13 and mapa_gerado[ypos+y][xpos+x][0] != 8:
             mapa_gerado[ypos+y][xpos+x][1]= True
 #Verifica se o jogador pode ir em uma direção
 #Marca território percorrido
@@ -203,7 +203,7 @@ def transformadorUI(mapa : list, ypos: int, xpos: int):
                 visualizacaoS+= '   '
                 visualizacaoI+= 'P  '
                 continue
-            if True:
+            if colunas[1] == True:
                 #Comparando colunas[0] com cada case e adicionando na linha de visualização o símbolo correspondente
                 #Biblioteca colorama permite adicionar cor ao texto
                 match colunas[0]:
@@ -295,7 +295,7 @@ def movimento(config):
         global sala
         while True:
             mapa_gerado[yPosition][xPosition][1]= True
-            checkWater(xPosition, yPosition)
+            checkNearVisible(xPosition, yPosition)
             comando= str(input('Escolha uma direção para ir: '))
             comando= comando.lower()
             global evento
@@ -313,7 +313,7 @@ def movimento(config):
                 break
             else:
                 print('Direção inválida')
-        checkWater(xPosition, yPosition)
+        checkNearVisible(xPosition, yPosition)
         mapa_gerado[yPosition][xPosition][1]= True
         transformadorUI(mapa_gerado, yPosition, xPosition)
         if 10 <= evento[0] <= 13:
@@ -362,7 +362,7 @@ def iniciandoMapa(n):
         geradorInimigo(mapa_gerado, 10+randint(0,sala))
         i+= 1
     i=0
-    while i < 10:
+    while i < 9:
         geradorAmbiente(mapa_gerado, 4, 3)
         i+=1
     i= 0
@@ -397,7 +397,7 @@ def iniciandoMapa(n):
         linha.append([1, True])
 
     for i in range(0, tamanho+2):
-        wall.append([1, True])
+        wall.append([1, False])
     mapa_gerado.insert(0, wall)
     #Reset para evitar criar 2 vetores com mesmo endereço de memória e acidentalmente criar 2 saidas
     wall= []
@@ -1241,6 +1241,7 @@ def vasculharRestos(config, inimigo):
                     e = ""
                     while e != "SIM" and e != "NAO":
                         e = input("SIM ou NAO:  ")
+                        e= e.upper()
                     if e == "SIM":
                         print("Por qual ?")
                         print(f"0 - {config[1][0]} \n 1 - {config[1][1]} \n 2 - {config[1][2]} \n 3 - {config[1][3]} \n 4 - {config[1][4]}")
@@ -1258,6 +1259,7 @@ def vasculharRestos(config, inimigo):
         e = ""
         while e != "SIM" and e != "NAO":
             e = input("SIM ou NAO:  ")
+            e= e.upper()
         if e == "SIM":
             config[1][5] = inimigo[3]
             config[2][5] = inimigo[2]
