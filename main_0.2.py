@@ -362,7 +362,7 @@ def iniciandoMapa(n):
         geradorInimigo(mapa_gerado, 10+randint(0,sala))
         i+= 1
     i=0
-    while i < 9:
+    while i < randint(6,10):
         geradorAmbiente(mapa_gerado, 4, 3)
         i+=1
     i= 0
@@ -592,6 +592,7 @@ def MenuDeAcoes(config):
                     dif = config[0][1] - config[0][2]
                     config[0][2] = config[0][2] + dif
                     print(f'Sua vida aumentou {dif} unidades, sua vida atual é de {config[0][1]}.')
+                    config[3][i]= None
                     break
                 elif i == (fim -1):
                     print('Você não tem a poção necessária para descansar.')
@@ -1271,7 +1272,7 @@ def vasculharRestos(config, inimigo):
 
 def verInventario(config):
     i = 0
-    print(f"|Vida : {config[0][1]}/{config[0][2]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
+    print(f"|Vida : {config[0][2]}/{config[0][1]} |For: {config[0][3]} | Int: {config[0][4]} |Agl: {config[0][5]} | Xp: {config[3][5]} |")
     print("E olhando na mochila se percebe que... ")
     print("Você possui: ")
     while i < 5:
