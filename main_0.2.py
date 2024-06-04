@@ -340,13 +340,26 @@ def movimento(config):
                 i+= 1
         elif evento[0] == 20:
             print('\nVocê segue o mapa e de repente o caminho atrás de você se fecha.\nVocê se depara com mais território não explorado.')
+            vetor_efeitos[6]= 0
             sala+= 1
             iniciandoMapa(tamanho_inicial_mapa)
         elif evento[0] == 19:
             print('Acima de você há uma passagem!')
         elif evento[0] == 8:
             print('Você é surpreendido por uma armadilha!')
+            dano= randint(5, int(config[0][2]/2))
+            config[0][2]-= dano
+            print(f'A armadilha deu {dano} de dano em você')
             mapa_gerado[evento[1]][evento[2]][0]= 0
+        elif evento[0] == 3:
+            if vetor_efeitos[6] != 2:
+                if randint(1,5) == 2:
+                    vetor_efeitos[6]+= 1
+                    monstro_atual= criarFichaMonstro(randint(12,13), True)
+                    print('Algo surge das profundezas!')
+                    sleep(0.5)
+                    combate(config, monstro_atual, "j")
+                    vasculharRestos(config, monstro_atual)
 def iniciandoMapa(n):
     tamanho= n
     global mapa_gerado
@@ -389,8 +402,10 @@ def iniciandoMapa(n):
     while i < randint(3, 5):
         geradorChave(mapa_gerado)
         i+= 1
-    geradorArmadilha(mapa_gerado)
-
+    i= 0 
+    while i < randint(1,3):
+        geradorArmadilha(mapa_gerado)
+        i+= 1
     #Adicionando bordas
     for linha in mapa_gerado:
         linha.insert(0, [1, True])
@@ -485,6 +500,7 @@ def EscolhaPersonagem():
         ataque1, armadura  = 'Machado', 'Gibão de Pele' 
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: MACHADO')
+        print('VOCÊ COMEÇA COM UMA CHAVE')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
         ataques = [ataque1, ataque2, ataque3, ataque4, ataque5, armadura]
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
@@ -499,6 +515,7 @@ def EscolhaPersonagem():
         ataque1, armadura = 'Espada', 'Cota de Malha'
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: ESPADA')
+        print('VOCÊ COMEÇA COM UMA CHAVE')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
         ataques = [ataque1, ataque2, ataque3, ataque4, ataque5, armadura]
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
@@ -513,6 +530,7 @@ def EscolhaPersonagem():
         ataque1, armadura = 'Cajado', 'Manto do Mago'
         print(f'{Forc} DE FORÇA | {Inte} DE INTELIGÊNCIA | {Agl} DE AGILIDADE ')
         print('VOCÊ GANHOU SUA PRIMEIRA ARMA: CAJADO')
+        print('VOCÊ COMEÇA COM UMA CHAVE')
         atributos = [Classe, vidaMax, vidaAtual, Forc, Inte, Agl]
         ataques = [ataque1, ataque2, ataque3, ataque4, ataque5, armadura]
         dano_ataques = [d_ataque1, d_ataque2, d_ataque3, d_ataque4, d_ataque5, Ca]
@@ -611,7 +629,7 @@ def combate(config, inimigo, turno):
     if config[0][2] > 0:
         #O INIMIGO MORREU ?
         if inimigo[1] <= 0:
-            print(f" O {inimigo[0]} foi derrotado. Parabens !")
+            print(f" O {inimigo[0]} foi derrotado. Parabéns !")
             print(f" Você receber {inimigo[7]} de xp, e agora seu xp é {config[3][5]}")
             config[3][5] += inimigo[7]  
             uparDeLevel(config)
@@ -620,6 +638,8 @@ def combate(config, inimigo, turno):
             vetor_efeitos[1]= 0
             vetor_efeitos[2]= 0 
             vetor_efeitos[3]= 0
+            vetor_efeitos[4]= 0
+            vetor_efeitos[5]= 0
 
         #SE NÃO, ROLE O TURNO
         else:
@@ -723,9 +743,6 @@ def uparDeLevel(config):
             print(f"Você upou de level!, agora seu level é {level}")
             level +=1
 
-
-
-
 #MENU JOGADOR
 def menuCombate(config,inimigo):
     print("------------------------É seu turno! O que deseja fazer ?------------------------")
@@ -801,9 +818,14 @@ def menuCombate(config,inimigo):
             return combate(config,inimigo,"i")
 
 #GERADORES
-def criarFichaMonstro(dificuldade):
+def criarFichaMonstro(dificuldade, aquatico= False):
     inimigoConfig = []
-    inimigo = randint(1,10)
+    if aquatico == False:
+        inimigo = randint(1,10)
+    elif dificuldade == 12:
+        inimigo= 2
+    else:
+        inimigo= choice((1,2,9))
     #FACIL
     if dificuldade == 10 or dificuldade == 11:    
         if inimigo == 1:
@@ -1012,7 +1034,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append("Carteira de Trabalho")
             inimigoConfig.append(10)
             inimigoConfig.append(13)
-            inimigoConfig.append("FILHA D******")
+            inimigoConfig.append("Tristeza")
             inimigoConfig.append("Atender caixa")
             inimigoConfig.append(7)
             inimigoConfig.append(4)
@@ -1022,7 +1044,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append(15)
             inimigoConfig.append(12)
             inimigoConfig.append("Drip")
-            inimigoConfig.append("Lançar Bosta")
+            inimigoConfig.append("Monke")
             inimigoConfig.append(6)
             inimigoConfig.append(4)
             inimigoConfig.append(40)
@@ -1087,7 +1109,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append(45)
             inimigoConfig.append(14)
             inimigoConfig.append("Cor de Rosa")
-            inimigoConfig.append("Casada?")
+            inimigoConfig.append(";)")
             inimigoConfig.append(10)
             inimigoConfig.append(3)
             inimigoConfig.append(90)
@@ -1095,8 +1117,8 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append("Varias Góticas")
             inimigoConfig.append(40)
             inimigoConfig.append(13)
-            inimigoConfig.append("Roupas Maleficas")
-            inimigoConfig.append("Carencia Paterna")
+            inimigoConfig.append("Roupas Maléficas")
+            inimigoConfig.append("Carência Paterna")
             inimigoConfig.append(12)
             inimigoConfig.append(2)
             inimigoConfig.append(90)
@@ -1132,7 +1154,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append(80)
             inimigoConfig.append(10)
             inimigoConfig.append("???")
-            inimigoConfig.append("Observar em silencio profundo")
+            inimigoConfig.append("Observar em silêncio profundo")
             inimigoConfig.append(12)
             inimigoConfig.append(10)
             inimigoConfig.append(120)
@@ -1141,7 +1163,7 @@ def criarFichaMonstro(dificuldade):
             inimigoConfig.append(65)
             inimigoConfig.append(14)
             inimigoConfig.append("Professores")
-            inimigoConfig.append("Enrolação do carai")
+            inimigoConfig.append("Enrolação")
             inimigoConfig.append(10)
             inimigoConfig.append(5)
             inimigoConfig.append(90)
@@ -1185,6 +1207,9 @@ def ataqueJogador(config,escolha, receptor):
             if config[0][0] != 3:
                 dano = randint(1, config[2][escolha]) + config[0][2]
                 receptor[1] -= (dano)
+                if vetor_efeitos[4] == 1:
+                    receptor[1]-= 1
+                    print(f'As chamas deram 1 de dano no inimigo')
                 print(f"Você deu {dano} de dano no {receptor[0]}, e a vida dele agora é {receptor[1]}")
             #É MAGO, ENTÃO USE INTELIGENCIA NO DANO 
             else:
@@ -1195,14 +1220,17 @@ def ataqueJogador(config,escolha, receptor):
         combate(config,receptor, "i")
 
     else:
-        print("O inimigo desviou")
+        if vetor_efeitos[4] == 1:
+            receptor[1]-= 1
+            print(f'As chamas deram 1 de dano no inimigo')
+        print("O inimigo desviou seu ataque")
         sleep(0.5)
         combate(config,receptor, "i")
 
 def ataqueInimigo(inimigo,config):
     sleep(0.5)
     acerto = randint(1,20) + inimigo[6]- vetor_efeitos[1]
-    if acerto >= config[2][5]:
+    if (acerto-vetor_efeitos[5]) >= config[2][5]:
         if vetor_efeitos[3] == 1:
             print('O ataque foi bloqueado')
             vetor_efeitos[3]= 0
@@ -1212,6 +1240,7 @@ def ataqueInimigo(inimigo,config):
             config[0][2] -= inimigo[5]
             sleep(0.5)
             combate(config, inimigo, "j")
+        vetor_efeitos[5]= 0
     else:
         print(f"o {inimigo[0]} tentou usar {inimigo[4]}, porém errou!!!")
         sleep(0.5)
@@ -1300,7 +1329,7 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
             if posicaoAnalisada[0] == 7:
                 posicaoAnalisada[0]= 6
                 print('O baú foi aberto')
-        case 'Isqueiro':
+        case 'Tocha':
             if (posicaoAnalisada[0] == 2) or (posicaoAnalisada[0] == 5):
                 mapa_gerado[local[0]][local[1]][0]= 0
                 print('Obstáculo virou cinzas')
@@ -1313,7 +1342,7 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
                     print('O baú virou cinzas')
                     posicaoAnalisada[0]= 6
             mapa_gerado[local[0]][local[1]][1]= True
-        case 'Lanterna':
+        case 'Pedra luminosa':
             Lcontador= 0
             while Lcontador < 6:
                 try:
@@ -1334,9 +1363,14 @@ def itemsMapa(tipo_item, local, direcao): #Função controla o que cada item (qu
                 for coluna in linha:
                     coluna[1]= True
             print('Seu mapa está completo')
+        case 'Orbe elétrico':
+            mapa_gerado[local[0]][local[1]][1]= True
+            if mapa_gerado[local[0]][local[1]][0] == 3:
+                vetor_efeitos[6]= 2
+            print('As águas dessa floresta foram eletrocutadas')
 def itemsCombate(tipo_item):
     global vetor_efeitos
-    vetor_efeitos= [0, 0, 0, 0]
+    vetor_efeitos= [0, 0, 0, 0, 0, 0, 0]
     match tipo_item:
         case 'Amuleto da sorte':
             vetor_efeitos[0]= 5
@@ -1344,32 +1378,39 @@ def itemsCombate(tipo_item):
         case 'Bomba de fumaça':
             vetor_efeitos[1]= 15
             print('Você está quase invisível')
-        case 'Tazer':
+        case 'Orbe elétrico':
             vetor_efeitos[2]= 1
             print('Seu inimigo foi paralizado')
         case 'Escudo':
             vetor_efeitos[3]= 1
             print('O próximo ataque será defendido')
+        case 'Tocha':
+            vetor_efeitos[4]= 1
+            print('O inimigo está em chamas')
+        case 'Pedra luminosa':
+            vetor_efeitos[5]= 5
+            print('Seu inimigo não consegue ver direito')
 
 #ITEMS : (LEANDRO)
 
 ##################
 #Início do programa principal
 #Algums items que eu vou adicionar
-vetor_items= ['Chave', 'Isqueiro', 'Lanterna', 'Mapa completo', #Items do mapa
-              'Bomba de fumaça', 'Tazer', 'Escudo', 'Amuleto da sorte', #Items de combate (não são ataques)
+vetor_items= ['Chave', 'Tocha', 'Pedra luminosa', 'Mapa completo', #Items do mapa
+              'Bomba de fumaça', 'Orbe elétrico', 'Escudo', 'Amuleto da sorte', #Items de combate (não são ataques)
                'Poção', #Outros items
               ]
-vetor_efeitos= [0, 0, 0, 0]
+vetor_efeitos= [0, 0, 0, 0, 0, 0, 0]
 tamanho_inicial_mapa= 14
 sala= 0
 r = inicio()
 if r == 1:  
     config = EscolhaPersonagem()
-    print(f'Antes de começar, um rápido tutorial sobre o jogo:.')
-    print(f'Seu objetivo é conseguir o máximo de pontos possíveis, ao mesmo tempo que atravessa o máximo de salas.')
-    print(f'O mapa está totalmente escuro, e se revelará enquanto você anda por ele.')
-    print("Haverá itens durante sua jornada, você só saberá o que eles podem fazer ao achá-los.")
+    print('Antes de começar, um rápido tutorial sobre o jogo.')
+    print('Seu objetivo é conseguir o máximo de pontos possíveis, ao mesmo tempo que atravessa o máximo de salas possiveis.')
+    print('O mapa está totalmente escuro, e se revelará enquanto você anda por ele.')
+    print("Haverá itens durante sua jornada, você descobrirá o que eles fazem quando achá-los")
+    print("Caso uma luta deixe-o ferido lembre-se de descansar quando tiver uma poção!")
     print("Legenda: ")
     print("Árvore:")
     print(f"{Fore.GREEN}_  {Style.RESET_ALL}")
@@ -1397,12 +1438,7 @@ if r == 1:
     print("Inimigo:")
     print(f' {Fore.RED}O {Style.RESET_ALL}')
     print(f'{Fore.RED}| |{Style.RESET_ALL}')
-    print("\n\nBom jogo!\n")
-
-
-
-
-
+    print("\nBom jogo!\n")
 
     iniciandoMapa(tamanho_inicial_mapa)
     while True: 
